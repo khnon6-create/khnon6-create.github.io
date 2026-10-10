@@ -7,159 +7,196 @@
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#faf6f4;--card:#fff;--ink:#2a1a22;--mute:#7d6a73;--line:#eadfe2;--wine:#8a2f55;--wine2:#6e2243;--ok:#2e7d5b;--bad:#b3342f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1217;--card:#27191f;--ink:#f6e9ee;--mute:#b79ba7;--line:#3b2831;--wine:#d0668f;--wine2:#b44f78;--ok:#55c394;--bad:#ff8a84}}
-:root[data-theme="dark"]{--bg:#1b1217;--card:#27191f;--ink:#f6e9ee;--mute:#b79ba7;--line:#3b2831;--wine:#d0668f;--wine2:#b44f78;--ok:#55c394;--bad:#ff8a84}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#1b1217;--card:#27191f;--ink:#f6e9ee;--mute:#b79ba7;--line:#3b2831;--wine:#d0668f;--wine2:#b44f78;--ok:#55c394;--bad:#ff8a84}}
+*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Prompt,system-ui,sans-serif}
-.wrap{max-width:720px;margin:0 auto;padding:16px}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
 header{display:flex;justify-content:space-between;align-items:center;gap:12px}
-h1{font-size:20px;margin:0;font-weight:600}.sub{color:var(--mute);font-size:13px}
+h1{font-size:20px;margin:0;font-weight:600}h1 small{font-size:12px;color:var(--mute);font-weight:400}.sub{color:var(--mute);font-size:13px}
 button{font:inherit;cursor:pointer}
-.primary{background:var(--wine);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:500}
-.primary:active{background:var(--wine2)}.primary:disabled{opacity:.4}
-.tabs{display:flex;gap:8px;margin:16px 0 12px}
+.primary{background:var(--wine);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:500}.primary:disabled{opacity:.4}
+.lite{background:none;border:1px solid var(--line);color:var(--mute);border-radius:10px;padding:6px 10px;font-size:13px}
+#q{margin:12px 0 0}.tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
 .tab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:6px 14px}
 .tab[aria-pressed=true]{background:var(--wine);color:#fff;border-color:var(--wine)}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-@media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
-.item{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;padding:0;color:inherit}
-.pic{height:150px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:linear-gradient(#f5ece9,#efe3df)}
-.top{width:46px;height:62px;border-radius:14px 14px 8px 8px}.skirt{width:62px;height:34px;border-radius:6px 6px 14px 14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
+.item{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;padding:0;color:inherit}.item.off{opacity:.5}
+.pic{aspect-ratio:3/4;position:relative;background:linear-gradient(#f5ece9,#efe3df);display:flex;align-items:center;justify-content:center}
+.pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.noimg{color:#a89096;font-size:13px}
 .badges{position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:4px}
 .b{background:var(--wine2);color:#fff;font-size:11px;border-radius:10px;padding:1px 8px;width:max-content}
 .info{padding:10px 12px}.name{font-weight:600}.code{color:var(--mute);font-size:12px}
 .row{display:flex;justify-content:space-between;align-items:end;margin-top:6px}
 .price{color:var(--wine);font-weight:600;font-size:17px}.price small{color:var(--mute);font-weight:400;font-size:11px;display:block}
 .st{font-size:12px;border-radius:10px;padding:2px 8px}.free{background:#e3f4ec;color:var(--ok)}.busy{background:#fbe6e4;color:var(--bad)}
-.bk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
-.bk.cx{opacity:.55}.bk h3{margin:0 0 4px;font-size:15px}.bk p{margin:2px 0;color:var(--mute);font-size:13px}
-.ghost{background:none;border:1px solid var(--bad);color:var(--bad);border-radius:10px;padding:5px 12px;margin-top:8px}
+.bk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}.bk.cx{opacity:.55}
+.bk h3{margin:0 0 4px;font-size:15px}.bk p{margin:2px 0;color:var(--mute);font-size:13px}.acts{display:flex;gap:8px;margin-top:8px}
+.ghost{background:none;border:1px solid var(--bad);color:var(--bad);border-radius:10px;padding:8px 12px}
 .empty{text-align:center;color:var(--mute);padding:40px 0}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:9}
-.ov.on{display:flex}
-.sheet{background:var(--card);width:100%;max-width:560px;max-height:92%;overflow:auto;border-radius:20px 20px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:9}.ov.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:560px;max-height:94%;overflow:auto;border-radius:20px 20px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+.hero{width:100%;max-height:340px;object-fit:cover;border-radius:12px;margin-bottom:10px}
+.pt{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0;text-align:center;font-size:13px}
+.pt div{background:var(--bg);border-radius:10px;padding:6px 2px}.pt b{display:block;font-weight:500;color:var(--mute);font-size:12px}.pt span{color:var(--wine);font-weight:600}
 label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
-input,select{width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.seg button,.days button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px}
+input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.seg{display:flex;flex-wrap:wrap;gap:8px}.seg button,.days button{flex:1 1 28%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px}
 .seg button[aria-pressed=true],.days button[aria-pressed=true]{background:var(--wine);color:#fff;border-color:var(--wine)}
-.days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.days button:disabled{opacity:.3}
+.seg button:disabled,.days button:disabled{opacity:.3}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .sum{background:var(--bg);border-radius:12px;padding:12px;margin-top:14px;font-size:14px}
 .sum div{display:flex;justify-content:space-between}.sum .t{font-weight:600;font-size:17px;color:var(--wine);margin-top:6px}
 .msg{margin-top:10px;font-size:13px}.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
-.x{float:right;background:none;border:0;font-size:22px;color:var(--mute)}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+.x{float:right;background:none;border:0;font-size:24px;color:var(--mute)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div><h1>คลังสินค้า</h1><div class="sub" id="today"></div></div>
-    <button class="primary" id="newBtn">+ จองใหม่</button>
-  </header>
-  <div class="tabs">
-    <button class="tab" data-t="stock" aria-pressed="true">ชุดเซ็ท</button>
-    <button class="tab" data-t="free" aria-pressed="false">ว่างวันนี้</button>
-    <button class="tab" data-t="bk" aria-pressed="false">การจอง</button>
-  </div>
+  <header><div><h1>คลังสินค้า</h1><div class="sub" id="today"></div></div><button class="lite" id="admBtn">เจ้าของร้าน</button></header>
+  <input id="q" placeholder="ค้นหาชื่อหรือรหัสชุด">
+  <div class="tabs" id="tabs"></div>
   <div id="view"></div>
 </div>
-
-<div class="ov" id="ov"><div class="sheet" role="dialog" aria-modal="true" aria-label="จองชุด">
-  <button class="x" id="close" aria-label="ปิด">×</button>
-  <h1>จองชุด</h1>
-  <label for="fSet">เลือกชุด</label><select id="fSet"></select>
-  <label for="fName">ชื่อลูกค้า</label><input id="fName" placeholder="เช่น คุณมิ้นท์">
-  <label for="fTel">เบอร์โทร</label><input id="fTel" inputmode="tel" placeholder="08x-xxx-xxxx">
-  <label>พื้นที่จัดส่ง</label>
-  <div class="seg"><button id="aIn" aria-pressed="true">ในจังหวัด</button><button id="aOut" aria-pressed="false">ต่างจังหวัด</button></div>
-  <label for="fDate">วันใช้งานชุด</label><input type="date" id="fDate">
-  <label>จำนวนวันเช่า</label><div class="days" id="days"></div>
-  <div class="sum" id="sum"></div>
-  <div class="msg" id="msg"></div>
-  <button class="primary" id="save" style="width:100%;margin-top:14px">ยืนยันการจอง</button>
-</div></div>
-
+<div class="ov" id="ov"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <script>
-const PRICE=100, SHIP_FEE=60, OUT_MIN=2, OUT_LEAD=2, OUT_BACK=2, IN_BACK=1;
-const SETS=[
- ["เซ็ท 10","D192","#2b2a2e","#1d1c20"],["เซ็ท 10","D19","#efe9e1","#e4dccb"],["เซ็ท 9","D7V","#b9cfb4","#e9e3d2"],
- ["เซ็ท 8","D7U","#f4efe9","#e6dcc9"],["เซ็ท 7","D7T","#26242a","#18171b"],["เซ็ท 6","D7S","#9fd3d6","#e8e1d3"],
- ["เซ็ท 5","D7R","#eab6c6","#f1eeee"],["เซ็ท 4","D7Q","#a9d6e3","#eeeeee"],["เซ็ท 3","D7P","#b7ceae","#f6f3ee"]
-].map((s,i)=>({id:i,name:s[0],code:s[1],c1:s[2],c2:s[3]}));
+const API='https://script.google.com/macros/s/AKfycbwX5GXdSZOHyunymQqALuhPFLjzwjyPS1GuQbE4PyC2fydYnGneB-y9Xm0xGQT2USkMaA/exec';
+const SHIP_FEE=60,OUT_MIN=2,OUT_LEAD=2,OUT_BACK=2,IN_BACK=1;
 const $=s=>document.querySelector(s);
 const dn=s=>{const[a,b,c]=s.split('-').map(Number);return Date.UTC(a,b-1,c)/864e5};
 const iso=n=>new Date(n*864e5).toISOString().slice(0,10);
 const fmt=n=>new Date(n*864e5).toLocaleDateString('th-TH',{day:'numeric',month:'short',timeZone:'UTC'});
-const now=new Date(), todayStr=new Date(now-now.getTimezoneOffset()*6e4).toISOString().slice(0,10), T=dn(todayStr);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let bookings=[], tab='stock', area='in', days=1;
-const API='https://script.google.com/macros/s/AKfycbwX5GXdSZOHyunymQqALuhPFLjzwjyPS1GuQbE4PyC2fydYnGneB-y9Xm0xGQT2USkMaA/exec';
-const call=(action,data)=>fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action,...data})}).then(r=>r.json());
-async function load(){try{bookings=await (await fetch(API)).json()}catch(e){alert('เชื่อมต่อ Google Sheets ไม่ได้ ตรวจสอบลิงก์ API')}render()}
-const block=(start,d,a)=>[start-(a==='out'?OUT_LEAD:0), start+d-1+(a==='out'?OUT_BACK:IN_BACK)];
-const busy=(setId,s,e)=>bookings.find(b=>b.ok&&b.setId===setId&&b.bs<=e&&b.be>=s);
-$('#today').textContent='วันนี้ '+new Date().toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const now=new Date(),todayStr=new Date(now-now.getTimezoneOffset()*6e4).toISOString().slice(0,10),T=dn(todayStr);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const post=(a,d)=>fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({a,...d})}).then(r=>r.json());
+let sets=[],busy=[],adm=null,A={sets:[],orders:[],customers:[]},tab='all',f={};
+const ov=(p,q)=>p==='set'||q==='set'||p===q;
+const szs=s=>{const a=String(s.sizes||'').split(',').map(x=>x.trim()).filter(Boolean);return a.length?a:['']};
+const isBusy=(s,part,size,bs,be)=>busy.some(b=>String(b.setId)===String(s.id)&&ov(b.part,part)&&String(b.size)===size&&b.bs<=be&&b.be>=bs);
+const ph=s=>s.photo?'https://drive.google.com/thumbnail?id='+s.photo+'&sz=w600':'';
+const price=(s,part,d)=>part==='set'?(+s['p'+d]||0):(+s.pp||0)*d;
+const list=()=>adm?A.sets:sets;
+$('#today').textContent=new Date().toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function shrink(file,max){return new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8).split(',')[1])};i.src=URL.createObjectURL(file)})}
+async function load(){try{const r=await(await fetch(API)).json();sets=r.sets;busy=r.busy}catch(e){alert('เชื่อมต่อ Google Sheets ไม่ได้')}if(adm)await loadAdmin();render()}
+async function loadAdmin(){const r=await post('admin',{pin:adm});if(r.err){alert(r.err);adm=null;return}A=r}
+
+const cardHtml=s=>{const fr=szs(s).some(z=>!isBusy(s,'set',z,T,T));return `<button class="item${s.active==='Y'?'':' off'}" data-s="${s.id}"><div class="pic">${ph(s)?`<img src="${ph(s)}" alt="">`:'<span class="noimg">ยังไม่มีรูป</span>'}<div class="badges"><span class="b">เซ็ท</span>${s.isNew==='Y'?'<span class="b">ใหม่</span>':''}${s.pin==='Y'?'<span class="b">📌</span>':''}</div></div><div class="info"><div class="name">${esc(s.name)}</div><div class="code">${esc(s.code)} · 👁 ${+s.views||0}</div><div class="row"><div class="price">฿${s.p1||'-'}<small>ต่อวัน · ไซส์ ${esc(szs(s).join(' ')||'-')}</small></div><span class="st ${fr?'free':'busy'}">${fr?'ว่าง':'ไม่ว่าง'}</span></div></div></button>`};
+const stTxt={wait:'รอตรวจสลิป/ยืนยัน',paid:'ยืนยันรับเงินแล้ว',cancel:'ยกเลิก'};
+const tag=n=>n?'<span class="b" style="display:inline-block">ลูกค้าใหม่</span>':'<span class="b" style="display:inline-block;background:#2e7d5b">ลูกค้าเก่า</span>';
+function ordersHtml(){const l=[...A.orders].reverse();return l.length?l.map(o=>{const s=A.sets.find(x=>String(x.id)===String(o.setId))||{name:'?',code:''};return `<div class="bk ${o.status==='cancel'?'cx':''}"><h3>${esc(s.name)} (${esc(s.code)}) ${tag(o.newCust==='Y')}</h3><p>${esc(o.name)} · ${esc(o.tel)}</p><p>${o.part==='set'?'ทั้งเซ็ท':o.part==='top'?'ชิ้นบน':'ชิ้นล่าง'} · ไซส์ ${esc(o.size)||'-'} · ${o.area==='out'?'ต่างจังหวัด':'ในจังหวัด'} (${{pickup:'นัดรับ',grab:'Grab',ship:'ส่งพัสดุ'}[o.method]})</p>${o.address?`<p>ที่อยู่: ${esc(o.address)}</p>`:''}<p>ใช้งาน ${fmt(o.start)} (${o.days} วัน) · คืน ${fmt(o.be)} · ฿${o.total}</p>${o.slip?`<p><a href="https://drive.google.com/file/d/${o.slip}/view" target="_blank" rel="noopener">ดูสลิป</a></p>`:'<p>ยังไม่มีสลิป</p>'}<p><b>${stTxt[o.status]||o.status}</b></p>${o.status!=='cancel'?`<div class="acts">${o.status!=='paid'?`<button class="primary" data-o="${o.id}" data-v="paid">ยืนยันรับเงิน</button>`:''}<button class="ghost" data-o="${o.id}" data-v="cancel">ยกเลิก</button></div>`:''}</div>`}).join(''):'<div class="empty">ยังไม่มีออเดอร์</div>'}
+const custHtml=()=>A.customers.length?A.customers.map(c=>`<div class="bk"><h3>${esc(c.name)} ${tag((+c.count)<=1)}</h3><p>โทร ${esc(c.tel)} · จอง ${c.count} ครั้ง · รวม ฿${c.total}</p></div>`).join(''):'<div class="empty">ยังไม่มีลูกค้า</div>';
 
 function render(){
-  document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===tab));
+  const t=adm?[['all','ชุด'],['free','ว่างวันนี้'],['ord','ออเดอร์'],['cus','ลูกค้า']]:[['all','ชุดทั้งหมด'],['free','ว่างวันนี้']];
+  $('#tabs').innerHTML=t.map(x=>`<button class="tab" data-t="${x[0]}" aria-pressed="${tab===x[0]}">${x[1]}</button>`).join('');
+  $('#admBtn').textContent=adm?'ออกจากโหมดร้าน':'เจ้าของร้าน';
+  $('#q').style.display=(tab==='ord'||tab==='cus')?'none':'block';
   const v=$('#view');
-  if(tab==='bk'){
-    const l=[...bookings].sort((a,b)=>b.id-a.id);
-    v.innerHTML=l.length?l.map(b=>{const s=SETS[b.setId];return `<div class="bk ${b.ok?'':'cx'}"><h3>${esc(s.name)} (${s.code}) · ${esc(b.name)}</h3>
-      <p>โทร ${esc(b.tel||'-')} · ${b.area==='out'?'ต่างจังหวัด':'ในจังหวัด'}</p>
-      ${b.area==='out'?`<p>ส่งชุดภายใน ${fmt(b.bs)}</p>`:''}<p>ใช้งาน ${fmt(b.start)} – ${fmt(b.start+b.days-1)} (${b.days} วัน)</p>
-      <p>คืนชุดภายใน ${fmt(b.be)} · รวม ฿${b.total}</p>
-      ${b.ok?`<button class="ghost" data-c="${b.id}">ยกเลิกการจอง</button>`:'<p><b>ยกเลิกแล้ว</b></p>'}</div>`}).join(''):'<div class="empty">ยังไม่มีการจอง กด “+ จองใหม่” เพื่อเริ่ม</div>';
-    return;
-  }
-  let l=SETS; if(tab==='free') l=l.filter(s=>!busy(s.id,T,T));
-  v.innerHTML=`<div class="sub" style="margin-bottom:8px">ชุดเซ็ท · แสดง ${l.length} ดีไซน์</div><div class="grid">`+
-   l.map(s=>{const bz=busy(s.id,T,T);return `<button class="item" data-s="${s.id}"><div class="pic"><div class="badges"><span class="b">เซ็ท</span><span class="b">ใหม่</span></div>
-   <div class="top" style="background:${s.c1}"></div><div class="skirt" style="background:${s.c2}"></div></div>
-   <div class="info"><div class="name">${s.name}</div><div class="code">${s.code}</div>
-   <div class="row"><div class="price">฿${PRICE}<small>ต่อวัน · 2 ชิ้นในเซ็ท</small></div><span class="st ${bz?'busy':'free'}">${bz?'ไม่ว่าง':'ว่าง'}</span></div></div></button>`}).join('')+'</div>';
+  if(tab==='ord'){v.innerHTML=ordersHtml();return}
+  if(tab==='cus'){v.innerHTML=custHtml();return}
+  let l=[...list()];const k=$('#q').value.trim().toLowerCase();
+  if(k)l=l.filter(s=>(s.name+' '+s.code).toLowerCase().includes(k));
+  if(tab==='free')l=l.filter(s=>szs(s).some(z=>!isBusy(s,'set',z,T,T)));
+  l.sort((a,b)=>(b.pin==='Y')-(a.pin==='Y'));
+  v.innerHTML=(adm?'<button class="primary" id="addSet" style="margin-bottom:10px">+ เพิ่มชุด</button>':'')+'<div class="grid">'+l.map(cardHtml).join('')+'</div>'+(l.length?'':'<div class="empty">ไม่พบชุด</div>');
 }
 
-function openForm(id){
-  $('#fSet').innerHTML=SETS.map(s=>`<option value="${s.id}">${s.name} (${s.code})</option>`).join('');
-  if(id!=null)$('#fSet').value=id;
-  $('#fDate').min=todayStr; if(!$('#fDate').value)$('#fDate').value=iso(T+1);
-  $('#ov').classList.add('on'); calc();
+function openSet(id){
+  const s=sets.find(x=>String(x.id)===String(id));if(!s)return;
+  s.views=(+s.views||0)+1;post('view',{id}).catch(()=>{});
+  f={s,part:'set',size:szs(s)[0],area:'in',method:'pickup',days:1};
+  $('#sheet').innerHTML=`<button class="x" id="close" aria-label="ปิด">×</button>${ph(s)?`<img class="hero" src="${ph(s)}" alt="">`:''}
+  <h1>${esc(s.name)} <small>${esc(s.code)}</small></h1>
+  <div class="pt">${[1,2,3,4,5].map(d=>`<div><b>${d} วัน</b><span>฿${s['p'+d]||'-'}</span></div>`).join('')}</div>
+  <label>เช่าแบบ</label><div class="seg"><button data-k="part" data-v="set">ทั้งเซ็ท</button>${+s.pp>0?`<button data-k="part" data-v="top">ชิ้นบน ฿${s.pp}/วัน</button><button data-k="part" data-v="bottom">ชิ้นล่าง ฿${s.pp}/วัน</button>`:''}</div>
+  <label>ไซส์</label><div class="seg" id="gSize"></div>
+  <label>พื้นที่</label><div class="seg"><button data-k="area" data-v="in">ในจังหวัด</button><button data-k="area" data-v="out">ต่างจังหวัด</button></div>
+  <label>การรับชุด</label><div class="seg" id="gMeth"></div>
+  <div id="addrBox"><label for="fAddr">ที่อยู่</label><textarea id="fAddr" rows="2"></textarea></div>
+  <label for="fDate">วันใช้งานชุด</label><input type="date" id="fDate">
+  <label>จำนวนวันเช่า</label><div class="days" id="days"></div>
+  <label for="fTel">เบอร์โทร</label><input id="fTel" inputmode="tel" placeholder="08x-xxx-xxxx"><div class="sub" id="cust"></div>
+  <label for="fName">ชื่อลูกค้า</label><input id="fName">
+  <label for="fSlip">แนบสลิปโอนเงิน (ต่างจังหวัดต้องแนบ)</label><input id="fSlip" type="file" accept="image/*">
+  <div class="sum" id="sum"></div><div class="msg" id="msg"></div>
+  <button class="primary" id="save" style="width:100%;margin-top:14px">ยืนยันการจอง</button>`;
+  $('#fDate').min=todayStr;$('#fDate').value=iso(T+1);
+  $('#ov').classList.add('on');calc();
 }
 function calc(){
-  const min=area==='out'?OUT_MIN:1; if(days<min)days=min;
-  $('#days').innerHTML=[1,2,3,4,5].map(d=>`<button data-d="${d}" aria-pressed="${d===days}" ${d<min?'disabled':''}>${d}</button>`).join('');
-  const sid=+$('#fSet').value, ds=$('#fDate').value, m=$('#msg'), btn=$('#save');
-  const ship=area==='out'?SHIP_FEE:0, total=PRICE*days+ship;
-  if(!ds){btn.disabled=true;return}
-  const st=dn(ds), [bs,be]=block(st,days,area);
-  $('#sum').innerHTML=`<div><span>ค่าเช่า ${days} วัน × ฿${PRICE}</span><span>฿${PRICE*days}</span></div>`+
-    (ship?`<div><span>ค่าจัดส่ง</span><span>฿${ship}</span></div><div><span>ส่งชุดถึงลูกค้าภายใน</span><span>${fmt(bs)}</span></div>`:'')+
-    `<div><span>คืนชุดภายใน</span><span>${fmt(be)}</span></div><div class="t"><span>รวม</span><span>฿${total}</span></div>`;
+  const s=f.s;if(!s)return;
+  const out=f.area==='out',min=out?OUT_MIN:1;if(f.days<min)f.days=min;
+  f.method=out?'ship':(f.method==='ship'?'pickup':f.method);
+  const ds=$('#fDate').value,st=ds?dn(ds):0,bs=st-(out?OUT_LEAD:0),be=st+f.days-1+(out?OUT_BACK:IN_BACK);
+  $('#gMeth').innerHTML=(out?[['ship','จัดส่งพัสดุ']]:[['pickup','นัดรับที่ร้าน'],['grab','ส่งผ่าน Grab']]).map(m=>`<button data-k="method" data-v="${m[0]}">${m[1]}</button>`).join('');
+  if(ds&&isBusy(s,f.part,f.size,bs,be)){const o=szs(s).find(z=>!isBusy(s,f.part,z,bs,be));if(o!==undefined)f.size=o}
+  $('#gSize').innerHTML=szs(s).map(z=>{const b=ds&&isBusy(s,f.part,z,bs,be);return `<button data-k="size" data-v="${esc(z)}" ${b?'disabled':''}>${esc(z)||'ฟรีไซส์'}${b?' (ไม่ว่าง)':''}</button>`}).join('');
+  $('#days').innerHTML=[1,2,3,4,5].map(d=>`<button data-d="${d}" aria-pressed="${d===f.days}" ${d<min?'disabled':''}>${d}</button>`).join('');
+  document.querySelectorAll('#sheet [data-k]').forEach(b=>b.setAttribute('aria-pressed',String(f[b.dataset.k])===b.dataset.v));
+  $('#addrBox').style.display=f.method==='pickup'?'none':'block';
+  const pr=price(s,f.part,f.days),ship=out?SHIP_FEE:0,total=pr+ship;
+  $('#sum').innerHTML=`<div><span>ค่าเช่า ${f.days} วัน</span><span>฿${pr}</span></div>`+(ship?`<div><span>ค่าจัดส่ง</span><span>฿${ship}</span></div>`:'')+(f.method==='grab'?'<div><span>ค่า Grab</span><span>จ่ายตามจริง</span></div>':'')+`<div><span>คืนชุดภายใน</span><span>${ds?fmt(be):'-'}</span></div><div class="t"><span>รวม</span><span>฿${total}</span></div>`;
   let err='';
-  if(st<T)err='เลือกวันย้อนหลังไม่ได้'; else if(bs<T)err='วันที่เลือกใกล้เกินไป ต่างจังหวัดต้องจองล่วงหน้าอย่างน้อย '+OUT_LEAD+' วัน';
-  else {const c=busy(sid,bs,be); if(c)err=`ชุดนี้ไม่ว่างช่วง ${fmt(c.bs)} – ${fmt(c.be)} เลือกวันอื่นหรือชุดอื่น`}
-  m.className='msg '+(err?'bad':'ok'); m.textContent=err||'ชุดว่างในช่วงที่เลือก'+(area==='out'?` (ต่างจังหวัดเช่าขั้นต่ำ ${OUT_MIN} วัน)`:'');
-  btn.disabled=!!err;
+  if(!ds)err='เลือกวันใช้งาน';else if(st<T)err='เลือกวันย้อนหลังไม่ได้';else if(bs<T)err='ต่างจังหวัดต้องจองล่วงหน้าอย่างน้อย '+OUT_LEAD+' วัน';
+  else if(!pr)err='ชุดนี้ยังไม่ได้ตั้งราคาสำหรับแบบที่เลือก';else if(isBusy(s,f.part,f.size,bs,be))err='ไม่ว่างในช่วงที่เลือก ลองเปลี่ยนวันหรือไซส์';
+  f.o={setId:s.id,part:f.part,size:f.size,area:f.area,method:f.method,start:st,days:f.days,bs,be,total};
+  const m=$('#msg');m.className='msg '+(err?'bad':'ok');m.textContent=err||'ว่าง จองได้';$('#save').disabled=!!err;
 }
-$('#view').onclick=e=>{
-  const c=e.target.closest('[data-c]'); if(c){if(confirm('ยืนยันยกเลิกการจองนี้?')){const id=c.dataset.c;bookings.find(b=>b.id==id).ok=false;render();call('cancel',{id}).catch(()=>alert('บันทึกไม่สำเร็จ'))}return}
-  const s=e.target.closest('[data-s]'); if(s)openForm(+s.dataset.s);
-};
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render()});
-$('#newBtn').onclick=()=>openForm();
-$('#close').onclick=()=>$('#ov').classList.remove('on');
-$('#ov').onclick=e=>{if(e.target.id==='ov')$('#ov').classList.remove('on')};
-$('#aIn').onclick=()=>{area='in';$('#aIn').setAttribute('aria-pressed',true);$('#aOut').setAttribute('aria-pressed',false);calc()};
-$('#aOut').onclick=()=>{area='out';$('#aOut').setAttribute('aria-pressed',true);$('#aIn').setAttribute('aria-pressed',false);calc()};
-$('#days').onclick=e=>{const d=e.target.closest('[data-d]');if(d){days=+d.dataset.d;calc()}};
-$('#fSet').onchange=$('#fDate').onchange=calc;
-$('#save').onclick=()=>{
-  const name=$('#fName').value.trim(); if(!name){$('#msg').className='msg bad';$('#msg').textContent='กรอกชื่อลูกค้าก่อน';return}
-  const st=dn($('#fDate').value),[bs,be]=block(st,days,area);
-  bookings.push({id:Date.now(),setId:+$('#fSet').value,name,tel:$('#fTel').value.trim(),area,start:st,days,bs,be,total:PRICE*days+(area==='out'?SHIP_FEE:0),ok:true});
-  call('add',{b:bookings[bookings.length-1]}).catch(()=>alert('บันทึกไม่สำเร็จ'));$('#ov').classList.remove('on');$('#fName').value='';$('#fTel').value='';tab='bk';render();
-};
+async function submit(){
+  const o={...f.o,name:$('#fName').value.trim(),tel:$('#fTel').value.trim(),address:$('#fAddr').value.trim()},m=$('#msg'),file=$('#fSlip').files[0];
+  const bad=t=>{m.className='msg bad';m.textContent=t};
+  if(!o.name||!o.tel)return bad('กรอกชื่อและเบอร์โทร');
+  if(o.method!=='pickup'&&!o.address)return bad('กรอกที่อยู่');
+  if(o.area==='out'&&!file)return bad('ต่างจังหวัดต้องแนบสลิป');
+  $('#save').disabled=true;m.className='msg';m.textContent='กำลังส่ง...';
+  try{const r=await post('book',{o,slip:file?await shrink(file,1000):''});
+    if(r.err){bad(r.err);$('#save').disabled=false;return}
+    $('#sheet').innerHTML='<button class="x" id="close">×</button><h1>จองสำเร็จ 🎉</h1><p>ร้านได้รับออเดอร์แล้ว'+(file?' และจะตรวจสลิปแล้วยืนยันกลับ':' กรุณาชำระเงินตามที่ร้านแจ้ง')+'</p>';load();
+  }catch(e){bad('ส่งไม่สำเร็จ ลองใหม่อีกครั้ง');$('#save').disabled=false}
+}
+function openEdit(id){
+  const s=id?A.sets.find(x=>String(x.id)===String(id)):{active:'Y',sizes:'S,M',isNew:'Y'};f={e:{...s}};
+  const ck=(i,v,t)=>`<label><input type="checkbox" id="${i}" ${v?'checked':''} style="width:auto"> ${t}</label>`;
+  $('#sheet').innerHTML=`<button class="x" id="close">×</button><h1>${id?'แก้ไขชุด':'เพิ่มชุด'}</h1>
+  <label>ชื่อชุด</label><input id="eName" value="${esc(s.name)}"><label>รหัสชุด</label><input id="eCode" value="${esc(s.code)}">
+  <label>ราคารวมตามจำนวนวัน (บาท) 1-5 วัน</label><div class="days">${[1,2,3,4,5].map(d=>`<input type="number" id="eP${d}" value="${s['p'+d]==null?'':s['p'+d]}" placeholder="${d}">`).join('')}</div>
+  <label>ราคาเช่าแยกชิ้นต่อวัน (ว่าง = ไม่ให้เช่าแยก)</label><input id="ePp" type="number" value="${s.pp||''}">
+  <label>ไซส์ที่มี (คั่นด้วยจุลภาค เช่น S,M)</label><input id="eSz" value="${esc(s.sizes)}">
+  <label>ต้นทุนชุด (บาท)</label><input id="eCost" type="number" value="${s.cost||''}">
+  <label>รูปชุด</label><input id="ePhoto" type="file" accept="image/*">
+  ${ck('eNew',s.isNew==='Y','ป้าย "ใหม่"')}${ck('ePin',s.pin==='Y','ปักหมุด (สูงสุด 6 ชุด)')}${ck('eAct',s.active==='Y','แสดงในร้าน')}
+  <div class="msg" id="msg"></div><button class="primary" id="eSave" style="width:100%;margin-top:14px">บันทึก</button>`;
+  $('#ov').classList.add('on');
+}
+async function saveEdit(){
+  const s=f.e,g=i=>$('#'+i).value.trim();
+  Object.assign(s,{name:g('eName'),code:g('eCode'),pp:g('ePp'),sizes:g('eSz'),cost:g('eCost'),isNew:$('#eNew').checked?'Y':'',pin:$('#ePin').checked?'Y':'',active:$('#eAct').checked?'Y':''});
+  [1,2,3,4,5].forEach(d=>s['p'+d]=g('eP'+d));
+  const m=$('#msg');if(!s.name||!s.code){m.className='msg bad';m.textContent='กรอกชื่อและรหัสชุด';return}
+  const file=$('#ePhoto').files[0];$('#eSave').disabled=true;m.className='msg';m.textContent='กำลังบันทึก...';
+  try{const r=await post('saveSet',{pin:adm,set:s,photo:file?await shrink(file,900):''});
+    if(r.err){m.className='msg bad';m.textContent=r.err;$('#eSave').disabled=false;return}
+    $('#ov').classList.remove('on');await load();
+  }catch(e){m.className='msg bad';m.textContent='บันทึกไม่สำเร็จ';$('#eSave').disabled=false}
+}
+document.addEventListener('click',async e=>{
+  const t=e.target;
+  const tb=t.closest('[data-t]');if(tb){tab=tb.dataset.t;return render()}
+  if(t.closest('#admBtn')){if(adm){adm=null;tab='all';render()}else{const p=prompt('รหัสเจ้าของร้าน');if(p){adm=p;await loadAdmin();if(adm)tab='ord';render()}}return}
+  if(t.closest('#close')||t.id==='ov')return $('#ov').classList.remove('on');
+  if(t.closest('#addSet'))return openEdit(null);
+  const c=t.closest('#view [data-s]');if(c)return adm?openEdit(c.dataset.s):openSet(c.dataset.s);
+  const od=t.closest('[data-o]');if(od){await post('status',{pin:adm,id:od.dataset.o,status:od.dataset.v});return load()}
+  const k=t.closest('#sheet [data-k]');if(k&&!k.disabled){f[k.dataset.k]=k.dataset.v;return calc()}
+  const d=t.closest('#days [data-d]');if(d&&!d.disabled){f.days=+d.dataset.d;return calc()}
+  if(t.closest('#save'))return submit();
+  if(t.closest('#eSave'))return saveEdit();
+});
+$('#sheet').addEventListener('change',async e=>{
+  if(e.target.id==='fDate')calc();
+  if(e.target.id==='fTel'&&e.target.value.trim().length>=9){try{const r=await post('lookup',{tel:e.target.value.trim()});$('#cust').textContent=r.name?'ลูกค้าเก่า: '+r.name:'ลูกค้าใหม่';if(r.name&&!$('#fName').value)$('#fName').value=r.name}catch(x){}}
+});
+$('#q').oninput=render;
 render();load();
 </script>
 </body>

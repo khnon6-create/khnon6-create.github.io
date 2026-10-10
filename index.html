@@ -8,62 +8,45 @@
 <style>
 :root{--bg:#faf6f4;--card:#fff;--ink:#2a1a22;--mute:#7d6a73;--line:#eadfe2;--wine:#8a2f55;--wine2:#6e2243;--ok:#2e7d5b;--bad:#b3342f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root{--bg:#1b1217;--card:#27191f;--ink:#f6e9ee;--mute:#b79ba7;--line:#3b2831;--wine:#d0668f;--wine2:#b44f78;--ok:#55c394;--bad:#ff8a84}}
-*{box-sizing:border-box}
+*{box-sizing:border-box}[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Prompt,system-ui,sans-serif}
-button{font:inherit;cursor:pointer}
-.layout{display:flex;min-height:100vh}
-aside{width:230px;flex:none;background:var(--card);border-right:1px solid var(--line);padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
-main{flex:1;min-width:0}
-.wrap{max-width:820px;margin:0 auto;padding:16px}
-.brand{font-size:20px;font-weight:600;color:var(--wine);padding:4px 8px 12px}
-.nh{font-size:12px;color:var(--mute);margin:14px 8px 4px}
-.nv{display:flex;justify-content:space-between;width:100%;text-align:left;background:none;border:0;color:var(--ink);padding:9px 10px;border-radius:10px}
-.nv small{color:var(--mute)}
-.nv[aria-pressed=true]{background:var(--wine);color:#fff}.nv[aria-pressed=true] small{color:#fff}
-#menuBtn{display:none}
-#login{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
-.lbox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;width:100%;max-width:380px}
-.lbox .brand{text-align:center;font-size:26px}.lbox p{text-align:center;margin:0 0 12px}
-#ownerBar{display:none;margin:12px 0 0;padding:12px;border:2px solid var(--wine);border-radius:14px;background:var(--card)}
-#ownerBar b{display:block;margin-bottom:8px;color:var(--wine)}
-#ownerBar .r{display:flex;gap:8px;flex-wrap:wrap}#ownerBar .r button{flex:1 1 30%}
-#ownerBar .big{width:100%;font-size:17px;padding:14px;margin-bottom:8px}
-#fab{display:none;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;border-radius:30px;padding:14px 20px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
-.qrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
-#scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:19}
-@media(max-width:759px){
- aside{position:fixed;left:0;top:0;bottom:0;height:auto;z-index:20;transform:translateX(-100%);transition:transform .2s;padding-top:calc(16px + env(safe-area-inset-top,0px))}
- aside.on{transform:none}#scrim.on{display:block}#menuBtn{display:inline-block}
-}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.hl{display:flex;align-items:center;gap:10px}
 h1{font-size:20px;margin:0;font-weight:600}h1 small{font-size:12px;color:var(--mute);font-weight:400}.sub{color:var(--mute);font-size:13px}
+button{font:inherit;cursor:pointer}
 .primary{background:var(--wine);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:500}.primary:disabled{opacity:.4}
 .lite{background:none;border:1px solid var(--line);color:var(--mute);border-radius:10px;padding:6px 10px;font-size:13px}
-#q{margin:12px 0}
+.lg{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.lc{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 24px;width:100%;max-width:400px;text-align:center}
+.lc .seg{margin-top:12px}.lc label{text-align:left}
+.app{display:flex;min-height:100vh}
+aside{width:215px;flex:none;background:var(--card);border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+aside h2{margin:0 8px 14px;font-size:18px;color:var(--wine)}
+.nav button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:9px 12px;color:var(--ink);margin-bottom:2px}
+.nav button[aria-pressed=true]{background:var(--wine);color:#fff}.nav hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+main{flex:1;min-width:0;padding:16px;max-width:900px}
+#menu{display:none;margin-bottom:10px}
+@media(max-width:700px){aside{position:fixed;left:0;top:0;z-index:8;transform:translateX(-100%);transition:transform .2s}aside.on{transform:none;box-shadow:0 0 40px rgba(0,0,0,.3)}#menu{display:inline-block}}
+.bar{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.bar{grid-template-columns:1fr}}
+.bar label{margin:0}.tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:5px 14px}
+.tab[aria-pressed=true]{background:var(--wine);color:#fff;border-color:var(--wine)}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
 .item{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;padding:0;color:inherit}.item.off{opacity:.5}
 .pic{aspect-ratio:3/4;position:relative;background:linear-gradient(#f5ece9,#efe3df);display:flex;align-items:center;justify-content:center}
 .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.noimg{color:#a89096;font-size:13px}
 .badges{position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:4px}
-.cnt{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;border-radius:10px;padding:1px 8px}
 .b{background:var(--wine2);color:#fff;font-size:11px;border-radius:10px;padding:1px 8px;width:max-content}
 .info{padding:10px 12px}.name{font-weight:600}.code{color:var(--mute);font-size:12px}
-.szs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.sz{font-size:12px;border:1px solid var(--ok);color:var(--ok);border-radius:8px;padding:0 8px}
-.sz.out{border-color:var(--line);color:var(--mute);text-decoration:line-through;opacity:.7}
-.row{display:flex;justify-content:space-between;align-items:end;margin-top:6px}
+.row{display:flex;justify-content:space-between;align-items:end;margin-top:6px;gap:6px}
 .price{color:var(--wine);font-weight:600;font-size:17px}.price small{color:var(--mute);font-weight:400;font-size:11px;display:block}
 .st{font-size:12px;border-radius:10px;padding:2px 8px}.free{background:#e3f4ec;color:var(--ok)}.busy{background:#fbe6e4;color:var(--bad)}
+.zs{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}.z{font-size:12px;border-radius:8px;padding:0 8px;border:1px solid var(--ok);color:var(--ok)}.z.out{border-color:var(--line);color:var(--mute);text-decoration:line-through}
 .bk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}.bk.cx{opacity:.55}
 .bk h3{margin:0 0 4px;font-size:15px}.bk p{margin:2px 0;color:var(--mute);font-size:13px}.acts{display:flex;gap:8px;margin-top:8px}
 .ghost{background:none;border:1px solid var(--bad);color:var(--bad);border-radius:10px;padding:8px 12px}
 .empty{text-align:center;color:var(--mute);padding:40px 0}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:30}.ov.on{display:flex}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:9}.ov.on{display:flex}
 .sheet{background:var(--card);width:100%;max-width:560px;max-height:94%;overflow:auto;border-radius:20px 20px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
-.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin-bottom:6px}
-.gal img{flex:none;width:100%;max-height:380px;object-fit:cover;border-radius:12px;scroll-snap-align:center}
-.gh{font-size:12px;color:var(--mute);margin-bottom:8px;text-align:center}
+.gal{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin-bottom:10px}.gal img{flex:none;width:85%;max-height:380px;object-fit:cover;border-radius:12px;scroll-snap-align:center}
 .pt{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0;text-align:center;font-size:13px}
 .pt div{background:var(--bg);border-radius:10px;padding:6px 2px}.pt b{display:block;font-weight:500;color:var(--mute);font-size:12px}.pt span{color:var(--wine);font-weight:600}
 label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
@@ -76,131 +59,127 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;bo
 .sum div{display:flex;justify-content:space-between}.sum .t{font-weight:600;font-size:17px;color:var(--wine);margin-top:6px}
 .msg{margin-top:10px;font-size:13px}.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
 .x{float:right;background:none;border:0;font-size:24px;color:var(--mute)}
-.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}
-.pth{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg);border:1px solid var(--line)}
-.pth img{width:100%;height:100%;object-fit:cover}
-.pth button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;line-height:1;padding:0}
-.pth i{position:absolute;left:3px;bottom:3px;background:var(--wine);color:#fff;font-size:10px;font-style:normal;border-radius:6px;padding:0 5px}
-.padd{aspect-ratio:1;border:2px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--mute);cursor:pointer;margin:0}
-.padd input{display:none}
-.done{text-align:center;padding:20px 0}.done .ic{font-size:54px}
+.eph{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.eph .t{aspect-ratio:1;position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+.eph img{width:100%;height:100%;object-fit:cover}.eph .t button{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:22px;height:22px;line-height:20px;padding:0}
+.eph .add{font-size:28px;color:var(--wine);cursor:pointer}
+.ok2{text-align:center;padding:10px 0}.ok2 .big{font-size:52px}
 </style>
 </head>
 <body>
-<div class="layout">
-  <aside id="side"></aside>
-  <main><div class="wrap">
-    <header>
-      <div class="hl"><button class="lite" id="menuBtn" aria-label="เมนู">☰ เมนู</button><div><h1 id="title"></h1><div class="sub" id="today"></div></div></div>
-      <button class="lite" id="admBtn">เจ้าของร้าน</button>
-    </header>
-    <div id="ownerBar"></div>
-    <input id="q" placeholder="ค้นหาชื่อหรือรหัสชุด">
+<div class="lg" id="login"><div class="lc">
+  <h1 id="lgBrand"></h1><div class="sub" style="margin-top:14px">เลือกประเภทการเข้าใช้งาน</div>
+  <div class="seg" id="lgRole"><button data-r="cus" aria-pressed="true">👤 ลูกค้า</button><button data-r="own" aria-pressed="false">🏬 เจ้าของร้าน</button></div>
+  <label for="lgPw">รหัสเข้าใช้งาน</label><input id="lgPw" type="password" inputmode="numeric" autocomplete="off">
+  <div class="msg bad" id="lgMsg"></div>
+  <button class="primary" id="lgGo" style="width:100%;margin-top:14px">เข้าสู่ระบบ</button>
+</div></div>
+
+<div class="app" id="app" hidden>
+  <aside id="side"><h2 class="brand"></h2><nav class="nav" id="nav"></nav></aside>
+  <main>
+    <button class="lite" id="menu">☰ เมนู</button>
+    <div class="sub" id="today"></div>
+    <div id="bar"><div class="bar"><label>ดูความว่างวันที่<input type="date" id="vd"></label><label>ค้นหา<input id="q" placeholder="ชื่อหรือรหัสชุด"></label></div><div class="tabs" id="szTabs"></div></div>
     <div id="view"></div>
-    <div class="sub" style="text-align:center;margin:24px 0 8px">เวอร์ชัน 7 · 11 ต.ค. 2569</div>
-  </div></main>
+  </main>
 </div>
-<div id="login"><div class="lbox"><div class="brand" id="lbrand"></div><p class="sub">เลือกประเภทการเข้าใช้งาน</p>
-  <div class="seg"><button data-role="cust">👤 ลูกค้า</button><button data-role="owner">🏪 เจ้าของร้าน</button></div>
-  <label for="lcode">รหัสเข้าใช้งาน</label><input id="lcode" type="password" inputmode="numeric" autocomplete="off">
-  <div class="msg bad" id="lmsg"></div><button class="primary" id="lgo" style="width:100%;margin-top:14px">เข้าสู่ระบบ</button></div></div>
-<div id="scrim"></div>
-<button class="primary" id="fab" data-add>+ เพิ่มสินค้าใหม่</button>
 <div class="ov" id="ov"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <script>
+const BRAND='Nuea Brand';
+const CATS=['ชุดคาเฟ่','ชุดราตรี'];
 const API='https://script.google.com/macros/s/AKfycbwX5GXdSZOHyunymQqALuhPFLjzwjyPS1GuQbE4PyC2fydYnGneB-y9Xm0xGQT2USkMaA/exec';
-const BRAND='Nuea Brand';                             // <<< ชื่อแบรนด์/ร้าน แก้ตรงนี้ได้
-const CATS=['ชุดคาเฟ่','ชุดราตรี','ชุดไทย','ชุดทำงาน','อื่นๆ']; // <<< แก้หมวดหมู่ได้ตามต้องการ
 const SHIP_FEE=60,OUT_MIN=2,OUT_LEAD=2,OUT_BACK=2,IN_BACK=1;
 const $=s=>document.querySelector(s);
 const dn=s=>{const[a,b,c]=s.split('-').map(Number);return Date.UTC(a,b-1,c)/864e5};
 const iso=n=>new Date(n*864e5).toISOString().slice(0,10);
 const fmt=n=>new Date(n*864e5).toLocaleDateString('th-TH',{day:'numeric',month:'short',timeZone:'UTC'});
-const now=new Date(),todayStr=new Date(now-now.getTimezoneOffset()*6e4).toISOString().slice(0,10),T=dn(todayStr);
+const now=new Date(),loc=new Date(now-now.getTimezoneOffset()*6e4),todayStr=loc.toISOString().slice(0,10),T=dn(todayStr);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const post=(a,d)=>fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({a,code:sess&&sess.code,...d})}).then(r=>r.json());
-let sess=null,loginRole='cust',sets=[],busy=[],adm=null,A={sets:[],orders:[],customers:[]},view='sets',cat='all',sz='all',f={};
+let code='',role='cus',loginRole='cus';
+async function getJson(p){let r;try{r=await p}catch(e){throw 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้'+(/github\.io$/.test(location.hostname)?' (เช็กอินเทอร์เน็ต และตั้ง Deploy เป็น "ทุกคน")':' — หน้าพรีวิวในแชทเชื่อมต่อไม่ได้ ให้ทดสอบที่ khnon6-create.github.io')}
+  try{return await r.json()}catch(e){throw 'Apps Script ตอบกลับผิดปกติ: ยังไม่ได้วาง Code.gs ใหม่ / ยังไม่ได้ Deploy เวอร์ชันใหม่ / ยังไม่ได้อนุญาตสิทธิ์'}}
+const post=(a,d)=>getJson(fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({a,c:code,...d})}));
+let sets=[],busy=[],A={sets:[],orders:[],customers:[]},tab='shop',cat='all',sz='',V=T,f={};
+const adm=()=>role==='own';
 const ov=(p,q)=>p==='set'||q==='set'||p===q;
 const szs=s=>{const a=String(s.sizes||'').split(',').map(x=>x.trim()).filter(Boolean);return a.length?a:['']};
-const qmap=s=>{const m={};String(s.qty||'').split(',').forEach(p=>{const i=p.lastIndexOf(':');if(i>0&&+p.slice(i+1)>0)m[p.slice(0,i).trim()]=+p.slice(i+1)});return m};
-const qOf=(s,z)=>qmap(s)[z]||1;
-const isBusy=(s,part,size,bs,be)=>busy.filter(b=>String(b.setId)===String(s.id)&&ov(b.part,part)&&String(b.size)===size&&b.bs<=be&&b.be>=bs).length>=qOf(s,size);
-const pics=s=>String(s.photo||'').split(',').map(x=>x.trim()).filter(Boolean);
-const thumb=(id,w)=>'https://drive.google.com/thumbnail?id='+id+'&sz=w'+(w||600);
-const freeSizes=s=>szs(s).filter(z=>!isBusy(s,'set',z,T,T));
-const left=(s,z)=>Math.max(0,qOf(s,z)-busy.filter(b=>String(b.setId)===String(s.id)&&String(b.size)===z&&b.bs<=T&&b.be>=T).length);
-const total=s=>szs(s).reduce((a,z)=>a+qOf(s,z),0),leftAll=s=>szs(s).reduce((a,z)=>a+left(s,z),0);
+const isBusy=(s,part,size,bs,be)=>busy.some(b=>String(b.setId)===String(s.id)&&ov(b.part,part)&&String(b.size)===size&&b.bs<=be&&b.be>=bs);
+const free=(s,z)=>!isBusy(s,'set',z,V,V);
+const pics=s=>String(s.photos||s.photo||'').split(',').filter(Boolean);
+const th=(id,w)=>'https://drive.google.com/thumbnail?id='+id+'&sz=w'+w;
+const ph=s=>pics(s)[0]?th(pics(s)[0],600):'';
 const price=(s,part,d)=>part==='set'?(+s['p'+d]||0):(+s.pp||0)*d;
-const list=()=>adm?A.sets:sets;
+const list=()=>adm()?A.sets:sets;
+const cats=()=>[...new Set([...CATS,...list().map(s=>s.cat).filter(Boolean)])];
 $('#today').textContent=new Date().toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+document.title=BRAND;document.querySelectorAll('.brand,#lgBrand').forEach(e=>e.textContent=BRAND);
 function shrink(file,max){return new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8).split(',')[1])};i.src=URL.createObjectURL(file)})}
-async function load(){try{const r=await post('list',{});if(r.err)throw new Error(r.err);sets=r.sets;busy=r.busy}catch(e){alert('เชื่อมต่อ Google Sheets ไม่ได้')}if(adm)await loadAdmin();render()}
-async function loadAdmin(){const r=await post('admin',{pin:adm});if(r.err){alert(r.err);adm=null;return}A=r}
 
-const cardHtml=s=>{const fr=freeSizes(s).length,ps=pics(s);
-return `<button class="item${s.active==='Y'?'':' off'}" data-s="${s.id}"><div class="pic">${ps.length?`<img src="${thumb(ps[0])}" alt="" loading="lazy">`:'<span class="noimg">ยังไม่มีรูป</span>'}<div class="badges"><span class="b">เซ็ท</span>${s.isNew==='Y'?'<span class="b">ใหม่</span>':''}${s.pin==='Y'?'<span class="b">📌</span>':''}</div>${ps.length>1?`<span class="cnt">📷 ${ps.length}</span>`:''}</div><div class="info"><div class="name">${esc(s.name)}</div><div class="code">${esc(s.code)}${s.cat?' · '+esc(s.cat):''} · 👁 ${+s.views||0}</div>${s.brand?`<div class="code">แบรนด์ ${esc(s.brand)}</div>`:''}<div class="code">มีทั้งหมด ${total(s)} ชุด · ว่างวันนี้ ${leftAll(s)} ชุด</div><div class="szs">${szs(s).map(z=>`<span class="sz${isBusy(s,'set',z,T,T)?' out':''}">${esc(z)||'ฟรีไซส์'}${qOf(s,z)>1?' '+left(s,z)+'/'+qOf(s,z):''}</span>`).join('')}</div><div class="row"><div class="price">฿${s.p1||'-'}<small>ต่อวัน</small></div><span class="st ${fr?'free':'busy'}">${fr?'ว่างวันนี้':'ไม่ว่างวันนี้'}</span></div></div></button>`};
+async function enter(r,c){
+  const m=$('#lgMsg');m.textContent='กำลังตรวจสอบ...';code=c;
+  try{
+    if(r==='own'){const x=await post('admin',{});if(x.err)throw x.err;if(!x.orders)throw 'Apps Script ยังเป็นโค้ดเวอร์ชันเก่า ให้วาง Code.gs ใหม่แล้ว Deploy เวอร์ชันใหม่';A=x}
+    const x=await getJson(fetch(API+'?c='+encodeURIComponent(c)));if(x.err)throw x.err;if(!x.sets)throw 'Apps Script ยังเป็นโค้ดเวอร์ชันเก่า ให้วาง Code.gs ใหม่แล้ว Deploy เวอร์ชันใหม่';
+    sets=x.sets;busy=x.busy;role=r;tab=r==='own'?'ord':'shop';
+    try{sessionStorage.setItem('k',JSON.stringify([r,c]))}catch(e){}
+    $('#login').hidden=true;$('#app').hidden=false;$('#vd').value=todayStr;$('#vd').min=todayStr;m.textContent='';render();
+  }catch(e){code='';m.textContent=typeof e==='string'?e:'เกิดข้อผิดพลาด: '+e}
+}
+function logout(){try{sessionStorage.removeItem('k')}catch(e){}location.reload()}
+async function load(){
+  try{const r=await(await fetch(API+'?c='+encodeURIComponent(code))).json();sets=r.sets;busy=r.busy;if(adm()){const a=await post('admin',{});if(!a.err)A=a}}
+  catch(e){alert('เชื่อมต่อ Google Sheets ไม่ได้')}
+  render();
+}
+
+const cardHtml=s=>{const zl=szs(s),any=zl.some(z=>free(s,z));
+return `<button class="item${s.active==='Y'?'':' off'}" data-s="${s.id}"><div class="pic">${ph(s)?`<img src="${ph(s)}" alt="">`:'<span class="noimg">ยังไม่มีรูป</span>'}<div class="badges">${s.cat?`<span class="b">${esc(s.cat)}</span>`:''}${s.isNew==='Y'?'<span class="b">ใหม่</span>':''}${s.pin==='Y'?'<span class="b">📌</span>':''}</div></div><div class="info"><div class="name">${esc(s.name)}</div><div class="code">${esc(s.code)}${adm()?' · 👁 '+(+s.views||0):''}</div><div class="zs">${zl.map(z=>`<span class="z${free(s,z)?'':' out'}">${esc(z)||'ฟรีไซส์'}</span>`).join('')}</div><div class="row"><div class="price">฿${s.p1||'-'}<small>ต่อวัน</small></div><span class="st ${any?'free':'busy'}">${any?'ว่าง':'หมด'}</span></div></div></button>`};
 const stTxt={wait:'รอตรวจสลิป/ยืนยัน',paid:'ยืนยันรับเงินแล้ว',cancel:'ยกเลิก'};
 const tag=n=>n?'<span class="b" style="display:inline-block">ลูกค้าใหม่</span>':'<span class="b" style="display:inline-block;background:#2e7d5b">ลูกค้าเก่า</span>';
-const pt=v=>{v=String(v||'');return /^\d{4}-\d\d-\d\dT\d\d:\d\d/.test(v)?v.slice(8,10)+'/'+v.slice(5,7)+'/'+v.slice(0,4)+' '+v.slice(11,16):v};
-function ordersHtml(){const l=[...A.orders].reverse();return l.length?l.map(o=>{const s=A.sets.find(x=>String(x.id)===String(o.setId))||{name:'?',code:''};return `<div class="bk ${o.status==='cancel'?'cx':''}"><h3>${esc(s.name)} (${esc(s.code)}) ${tag(o.newCust==='Y')}</h3><p>${esc(o.name)} · ${esc(o.tel)}</p><p>${o.part==='set'?'ทั้งเซ็ท':o.part==='top'?'ชิ้นบน':'ชิ้นล่าง'} · ไซส์ ${esc(o.size)||'-'} · ${o.area==='out'?'ต่างจังหวัด':'ในจังหวัด'} (${{pickup:'นัดรับ',grab:'Grab',ship:'ส่งพัสดุ'}[o.method]})</p>${o.address?`<p>ที่อยู่: ${esc(o.address)}</p>`:''}<p>ใช้งาน ${fmt(o.start)} (${o.days} วัน) · คืน ${fmt(o.be)} · ฿${o.total}</p>${o.paytime?`<p>โอนเมื่อ: ${esc(pt(o.paytime))}</p>`:''}${o.slip?`<p><a href="https://drive.google.com/file/d/${o.slip}/view" target="_blank" rel="noopener">ดูสลิป</a></p>`:'<p>ยังไม่มีสลิป</p>'}<p><b>${stTxt[o.status]||o.status}</b></p>${o.status!=='cancel'?`<div class="acts">${o.status!=='paid'?`<button class="primary" data-o="${o.id}" data-v="paid">ยืนยันรับเงิน</button>`:''}<button class="ghost" data-o="${o.id}" data-v="cancel">ยกเลิก</button></div>`:''}</div>`}).join(''):'<div class="empty">ยังไม่มีออเดอร์</div>'}
+function ordersHtml(){const l=[...A.orders].reverse();return l.length?l.map(o=>{const s=A.sets.find(x=>String(x.id)===String(o.setId))||{name:'?',code:''};return `<div class="bk ${o.status==='cancel'?'cx':''}"><h3>${esc(s.name)} (${esc(s.code)}) ${tag(o.newCust==='Y')}</h3><p>${esc(o.name)} · ${esc(o.tel)}</p><p>${o.part==='set'?'ทั้งเซ็ท':o.part==='top'?'ชิ้นบน':'ชิ้นล่าง'} · ไซส์ ${esc(o.size)||'-'} · ${o.area==='out'?'ต่างจังหวัด':'ในจังหวัด'} (${{pickup:'นัดรับ',grab:'Grab',ship:'ส่งพัสดุ'}[o.method]})</p>${o.address?`<p>ที่อยู่: ${esc(o.address)}</p>`:''}<p>ใช้งาน ${fmt(o.start)} (${o.days} วัน) · คืน ${fmt(o.be)} · ฿${o.total}</p><p>จองเมื่อ ${new Date(o.created).toLocaleString('th-TH')}${o.paytime?' · โอนเมื่อ '+esc(String(o.paytime).replace('T',' ')):''}</p>${o.slip?`<p><a href="https://drive.google.com/file/d/${o.slip}/view" target="_blank" rel="noopener">ดูสลิป</a></p>`:'<p>ยังไม่มีสลิป</p>'}<p><b>${stTxt[o.status]||o.status}</b></p>${o.status!=='cancel'?`<div class="acts">${o.status!=='paid'?`<button class="primary" data-o="${o.id}" data-v="paid">ยืนยันรับเงิน</button>`:''}<button class="ghost" data-o="${o.id}" data-v="cancel">ยกเลิก</button></div>`:''}</div>`}).join(''):'<div class="empty">ยังไม่มีออเดอร์</div>'}
 const custHtml=()=>A.customers.length?A.customers.map(c=>`<div class="bk"><h3>${esc(c.name)} ${tag((+c.count)<=1)}</h3><p>โทร ${esc(c.tel)} · จอง ${c.count} ครั้ง · รวม ฿${c.total}</p></div>`).join(''):'<div class="empty">ยังไม่มีลูกค้า</div>';
 
-function sideHtml(){
-  const L=list(),nv=(a,k,v,t,n)=>`<button class="nv" ${a}="${k}" aria-pressed="${v}"><span>${t}</span>${n==null?'':`<small>${n}</small>`}</button>`;
-  const allSz=[...new Set(L.flatMap(s=>szs(s)).filter(Boolean))];
-  const cnt=c=>L.filter(s=>c==='all'||(s.cat||'')===c).length;
-  const used=[...new Set(L.map(s=>s.cat).filter(Boolean))].filter(c=>!CATS.includes(c));
-  return `<div class="brand">${esc(BRAND)}</div>${adm?'<button class="primary" data-add style="width:100%;margin:0 0 6px">+ เพิ่มสินค้าใหม่</button>':''}
-  <div class="nh">เมนู</div>${nv('data-n','sets',view==='sets','ชุดทั้งหมด')}${nv('data-n','free',view==='free','ว่างวันนี้')}${adm?nv('data-n','ord',view==='ord','ออเดอร์',A.orders.filter(o=>o.status==='wait').length||'')+nv('data-n','cus',view==='cus','ลูกค้า'):''}
-  <div class="nh">หมวดหมู่</div>${nv('data-c','all',cat==='all','ทั้งหมด',cnt('all'))}${[...CATS,...used].map(c=>nv('data-c',esc(c),cat===c,esc(c),cnt(c))).join('')}
-  <div class="nh">ไซส์ที่ว่างวันนี้</div>${nv('data-z','all',sz==='all','ทุกไซส์')}${allSz.map(z=>nv('data-z',esc(z),sz===z,esc(z))).join('')}`;
-}
 function render(){
-  $('#side').innerHTML=sideHtml();
-  $('#admBtn').textContent='ออกจากระบบ'+(adm?' (เจ้าของร้าน)':'');
-  $('#title').textContent=BRAND;$('#fab').style.display=adm?'block':'none';
-  const ob=$('#ownerBar');ob.style.display=adm?'block':'none';
-  ob.innerHTML=adm?`<b>โหมดเจ้าของร้าน</b><button class="primary big" data-add>+ เพิ่มสินค้าใหม่</button><div class="r"><button class="lite" data-n="sets">สินค้าทั้งหมด</button><button class="lite" data-n="ord">ออเดอร์</button><button class="lite" data-n="cus">ลูกค้า</button></div>`:'';
-  const lst=view==='sets'||view==='free';
-  $('#q').style.display=lst?'block':'none';
+  const nav=[['shop','all','🛍 ทั้งหมด'],...cats().map(c=>['shop',c,'👗 '+c])];
+  if(adm())nav.push(['-'],['ord','','📋 ออเดอร์'],['cus','','👥 ลูกค้า']);
+  nav.push(['-'],['out','','ออกจากระบบ']);
+  $('#nav').innerHTML=nav.map(n=>n[0]==='-'?'<hr>':`<button data-t="${n[0]}" data-c="${esc(n[1])}" aria-pressed="${n[0]===tab&&(tab!=='shop'||n[1]===cat)}">${esc(n[2])}</button>`).join('');
+  const shop=tab==='shop';$('#bar').hidden=!shop;
+  const allSz=[...new Set(list().flatMap(szs).filter(Boolean))];
+  $('#szTabs').innerHTML=['',...allSz].map(z=>`<button class="tab" data-z="${esc(z)}" aria-pressed="${sz===z}">${z?'ไซส์ '+esc(z):'ทุกไซส์'}</button>`).join('');
   const v=$('#view');
-  if(view==='ord'){v.innerHTML=ordersHtml();return}
-  if(view==='cus'){v.innerHTML=custHtml();return}
-  let l=[...list()];const k=$('#q').value.trim().toLowerCase();
+  if(tab==='ord')return v.innerHTML=ordersHtml();
+  if(tab==='cus')return v.innerHTML=custHtml();
+  let l=list().filter(s=>cat==='all'||s.cat===cat);
+  const k=$('#q').value.trim().toLowerCase();
   if(k)l=l.filter(s=>(s.name+' '+s.code).toLowerCase().includes(k));
-  if(cat!=='all')l=l.filter(s=>(s.cat||'')===cat);
-  if(sz!=='all')l=l.filter(s=>szs(s).includes(sz)&&!isBusy(s,'set',sz,T,T));
-  if(view==='free')l=l.filter(s=>freeSizes(s).length);
+  if(sz)l=l.filter(s=>szs(s).includes(sz)&&free(s,sz));
   l.sort((a,b)=>(b.pin==='Y')-(a.pin==='Y'));
-  v.innerHTML=(adm?'<button class="primary" id="addSet" style="margin-bottom:10px">+ เพิ่มชุด</button>':'')+'<div class="grid">'+l.map(cardHtml).join('')+'</div>'+(l.length?'':'<div class="empty">ไม่พบชุด</div>');
+  v.innerHTML=(adm()?'<button class="primary" id="addSet" style="margin-bottom:10px">+ เพิ่มชุด</button>':'')+'<div class="grid">'+l.map(cardHtml).join('')+'</div>'+(l.length?'':'<div class="empty">ไม่พบชุดที่ว่างตามที่เลือก</div>');
 }
-const side=o=>{$('#side').classList.toggle('on',o);$('#scrim').classList.toggle('on',o)};
 
 function openSet(id){
   const s=sets.find(x=>String(x.id)===String(id));if(!s)return;
   s.views=(+s.views||0)+1;post('view',{id}).catch(()=>{});
-  const ps=pics(s);
-  f={s,part:'set',size:freeSizes(s)[0]!==undefined?freeSizes(s)[0]:szs(s)[0],area:'in',method:'pickup',days:1};
-  $('#sheet').innerHTML=`<button class="x" id="close" aria-label="ปิด">×</button>${ps.length?`<div class="gal">${ps.map(p=>`<img src="${thumb(p,900)}" alt="" loading="lazy">`).join('')}</div>${ps.length>1?`<div class="gh">เลื่อนดูรูปทั้งหมด ${ps.length} รูป →</div>`:''}`:''}
-  <h1>${esc(s.name)} <small>${esc(s.code)}</small></h1>
-  <div class="sub">${s.brand?'แบรนด์ '+esc(s.brand)+' · ':''}มีทั้งหมด ${total(s)} ชุด · ว่างวันนี้ ${leftAll(s)} ชุด</div>
+  const fz=szs(s).find(z=>free(s,z));
+  f={s,part:'set',size:fz!==undefined?fz:szs(s)[0],area:'in',method:'pickup',days:1};
+  $('#sheet').innerHTML=`<button class="x" id="close" aria-label="ปิด">×</button>${pics(s).length?`<div class="gal">${pics(s).map(i=>`<img src="${th(i,800)}" alt="">`).join('')}</div>`:''}
+  <h1>${esc(s.name)} <small>${esc(s.code)}${s.cat?' · '+esc(s.cat):''}</small></h1>
   <div class="pt">${[1,2,3,4,5].map(d=>`<div><b>${d} วัน</b><span>฿${s['p'+d]||'-'}</span></div>`).join('')}</div>
-  <label>ไซส์วันนี้</label><div class="szs">${szs(s).map(z=>`<span class="sz${isBusy(s,'set',z,T,T)?' out':''}">${esc(z)||'ฟรีไซส์'}${isBusy(s,'set',z,T,T)?' (ไม่ว่าง)':(qOf(s,z)>1?' เหลือ '+left(s,z)+'/'+qOf(s,z):'')}</span>`).join('')}</div>
   <label>เช่าแบบ</label><div class="seg"><button data-k="part" data-v="set">ทั้งเซ็ท</button>${+s.pp>0?`<button data-k="part" data-v="top">ชิ้นบน ฿${s.pp}/วัน</button><button data-k="part" data-v="bottom">ชิ้นล่าง ฿${s.pp}/วัน</button>`:''}</div>
-  <label>เลือกไซส์</label><div class="seg" id="gSize"></div>
+  <label>ไซส์</label><div class="seg" id="gSize"></div>
   <label>พื้นที่</label><div class="seg"><button data-k="area" data-v="in">ในจังหวัด</button><button data-k="area" data-v="out">ต่างจังหวัด</button></div>
   <label>การรับชุด</label><div class="seg" id="gMeth"></div>
   <div id="addrBox"><label for="fAddr">ที่อยู่</label><textarea id="fAddr" rows="2"></textarea></div>
   <label for="fDate">วันใช้งานชุด</label><input type="date" id="fDate">
   <label>จำนวนวันเช่า</label><div class="days" id="days"></div>
-  <label for="fTel">เบอร์โทร (ตัวเลข 10 หลัก)</label><input id="fTel" inputmode="numeric" maxlength="10" placeholder="0812345678"><div class="sub" id="cust"></div>
+  <label for="fTel">เบอร์โทร (10 หลัก)</label><input id="fTel" inputmode="numeric" maxlength="10" placeholder="0812345678"><div class="sub" id="cust"></div>
   <label for="fName">ชื่อลูกค้า</label><input id="fName">
   <label for="fSlip">แนบสลิปโอนเงิน</label><input id="fSlip" type="file" accept="image/*">
-  <label for="fPay">โอนเงินเมื่อ (วันที่และเวลา)</label><input type="datetime-local" id="fPay" max="${todayStr}T23:59">
+  <label for="fPay">โอนเงินเมื่อวันและเวลา</label><input id="fPay" type="datetime-local">
   <div class="sum" id="sum"></div><div class="msg" id="msg"></div>
   <button class="primary" id="save" style="width:100%;margin-top:14px">ยืนยันการจอง</button>`;
-  $('#fDate').min=todayStr;$('#fDate').value=iso(T+1);
-  const d=new Date(now-now.getTimezoneOffset()*6e4);$('#fPay').value=d.toISOString().slice(0,16);
+  $('#fDate').min=todayStr;$('#fDate').value=iso(Math.max(V,T));$('#fPay').value=loc.toISOString().slice(0,16);
   $('#ov').classList.add('on');calc();
 }
 function calc(){
@@ -210,7 +189,7 @@ function calc(){
   const ds=$('#fDate').value,st=ds?dn(ds):0,bs=st-(out?OUT_LEAD:0),be=st+f.days-1+(out?OUT_BACK:IN_BACK);
   $('#gMeth').innerHTML=(out?[['ship','จัดส่งพัสดุ']]:[['pickup','นัดรับที่ร้าน'],['grab','ส่งผ่าน Grab']]).map(m=>`<button data-k="method" data-v="${m[0]}">${m[1]}</button>`).join('');
   if(ds&&isBusy(s,f.part,f.size,bs,be)){const o=szs(s).find(z=>!isBusy(s,f.part,z,bs,be));if(o!==undefined)f.size=o}
-  $('#gSize').innerHTML=szs(s).map(z=>{const b=ds&&isBusy(s,f.part,z,bs,be);return `<button data-k="size" data-v="${esc(z)}" ${b?'disabled':''}>${esc(z)||'ฟรีไซส์'}${b?' (ไม่ว่าง)':''}</button>`}).join('');
+  $('#gSize').innerHTML=szs(s).map(z=>{const b=ds&&isBusy(s,f.part,z,bs,be);return `<button data-k="size" data-v="${esc(z)}" ${b?'disabled':''}>${esc(z)||'ฟรีไซส์'}${b?' (หมด)':''}</button>`}).join('');
   $('#days').innerHTML=[1,2,3,4,5].map(d=>`<button data-d="${d}" aria-pressed="${d===f.days}" ${d<min?'disabled':''}>${d}</button>`).join('');
   document.querySelectorAll('#sheet [data-k]').forEach(b=>b.setAttribute('aria-pressed',String(f[b.dataset.k])===b.dataset.v));
   $('#addrBox').style.display=f.method==='pickup'?'none':'block';
@@ -223,178 +202,80 @@ function calc(){
   const m=$('#msg');m.className='msg '+(err?'bad':'ok');m.textContent=err||'ว่าง จองได้';$('#save').disabled=!!err;
 }
 async function submit(){
-  const o={...f.o,name:$('#fName').value.trim(),tel:$('#fTel').value.trim(),address:$('#fAddr').value.trim(),paytime:$('#fPay').value},m=$('#msg'),file=$('#fSlip').files[0],code=sess.code;
+  const o={...f.o,name:$('#fName').value.trim(),tel:$('#fTel').value.trim(),address:$('#fAddr').value.trim(),paytime:$('#fPay').value},m=$('#msg'),file=$('#fSlip').files[0];
   const bad=t=>{m.className='msg bad';m.textContent=t};
   if(!o.name)return bad('กรอกชื่อลูกค้า');
   if(!/^\d{10}$/.test(o.tel))return bad('เบอร์โทรต้องเป็นตัวเลข 10 หลัก');
   if(o.method!=='pickup'&&!o.address)return bad('กรอกที่อยู่');
-  if(!file)return bad('กรุณาแนบสลิปโอนเงิน');
-  if(!o.paytime)return bad('กรอกวันและเวลาที่โอนเงิน');
+  if(o.area==='out'&&!file)return bad('ต่างจังหวัดต้องแนบสลิป');
+  if(file&&!o.paytime)return bad('ระบุวันและเวลาที่โอนเงิน');
+  if(!file)o.paytime='';
   $('#save').disabled=true;m.className='msg';m.textContent='กำลังส่ง...';
-  try{const r=await post('book',{o,code,slip:await shrink(file,1000)});
+  try{const r=await post('book',{o,slip:file?await shrink(file,1000):''});
     if(r.err){bad(r.err);$('#save').disabled=false;return}
     const s=f.s;
-    $('#sheet').innerHTML=`<button class="x" id="close">×</button><div class="done"><div class="ic">✅</div><h1>ยืนยันการจองเสร็จสิ้น</h1><p class="sub">ร้านได้รับออเดอร์และสลิปของคุณแล้ว<br>จะตรวจสอบและติดต่อกลับโดยเร็ว</p><div class="sum" style="text-align:left"><div><span>ชุด</span><span>${esc(s.name)} (${esc(s.code)})</span></div><div><span>ไซส์</span><span>${esc(o.size)||'ฟรีไซส์'}</span></div><div><span>วันใช้งาน</span><span>${fmt(o.start)} (${o.days} วัน)</span></div><div><span>คืนชุดภายใน</span><span>${fmt(o.be)}</span></div><div class="t"><span>ยอดรวม</span><span>฿${o.total}</span></div></div><button class="primary" id="close" style="margin-top:16px">ตกลง</button></div>`;
-    load();
+    $('#sheet').innerHTML=`<button class="x" id="close">×</button><div class="ok2"><div class="big">✅</div><h1>ยืนยันการจองเสร็จสิ้น</h1><p class="sub">${esc(s.name)} (${esc(s.code)}) · ไซส์ ${esc(o.size)||'ฟรีไซส์'}<br>ใช้งาน ${fmt(o.start)} · คืน ${fmt(o.be)} · ฿${o.total}</p><p>ร้านได้รับออเดอร์แล้ว${file?' และจะตรวจสลิปแล้วติดต่อกลับ':' กรุณาชำระเงินตามที่ร้านแจ้ง'}</p><button class="primary" id="close2">ปิด</button></div>`;load();
   }catch(e){bad('ส่งไม่สำเร็จ ลองใหม่อีกครั้ง');$('#save').disabled=false}
 }
-const MAXP=10,SIZES=['XS','S','M','L','XL','XXL','ฟรีไซส์'];
-const rank=z=>{const k=SIZES.indexOf(z);return k<0?99:k};
-function phGrid(){
-  const n=f.photos.length+f.pending.length;
-  $('#pgrid').innerHTML=f.photos.map((id,i)=>`<div class="pth"><img src="${thumb(id,300)}" alt="">${i===0?'<i>ปก</i>':''}<button data-rm="${i}" aria-label="ลบรูป">×</button></div>`).join('')
-   +f.pending.map((p,i)=>`<div class="pth"><img src="${p.url}" alt=""><i>${n&&!f.photos.length&&i===0?'ปก':'ใหม่'}</i><button data-rp="${i}" aria-label="ลบรูป">×</button></div>`).join('')
-   +(n<MAXP?'<label class="padd">+<input type="file" id="ePhotos" accept="image/*" multiple></label>':'');
-  $('#pcnt').textContent=n+'/'+MAXP;
-}
-function addPhotos(files){
-  const room=MAXP-f.photos.length-f.pending.length,fl=[...files];
-  fl.slice(0,room).forEach(file=>f.pending.push({file,url:URL.createObjectURL(file)}));
-  const m=$('#msg');if(fl.length>room){m.className='msg bad';m.textContent='เพิ่มรูปได้สูงสุด '+MAXP+' รูป'}
-  phGrid();
-}
-function szUI(){
-  const all=[...SIZES,...f.sizes.filter(z=>!SIZES.includes(z))];
-  const tot=f.sizes.reduce((a,z)=>a+(f.q[z]||1),0);
-  $('#szBox').innerHTML=`<div class="seg">${all.map(z=>`<button type="button" data-ez="${esc(z)}" aria-pressed="${f.sizes.includes(z)}">${esc(z)}</button>`).join('')}</div>`+
-   (f.sizes.length?`<div style="margin-top:8px">${f.sizes.map(z=>`<div class="qrow"><span>ไซส์ ${esc(z)}</span><span><button type="button" class="lite" data-qd="${esc(z)}">−</button> <b>${f.q[z]||1}</b> ชุด <button type="button" class="lite" data-qu="${esc(z)}">+</button></span></div>`).join('')}</div><div class="sub" style="margin-top:6px">สินค้ามีทั้งหมด <b>${tot}</b> ชุด</div>`:'<div class="sub" style="margin-top:6px">เลือกไซส์อย่างน้อย 1 ไซส์</div>');
-}
-function editClick(t){
-  if(!f.e)return false;
-  const z=t.closest('[data-ez]');
-  if(z){const v=z.dataset.ez,i=f.sizes.indexOf(v);if(i<0){f.sizes.push(v);f.sizes.sort((a,b)=>rank(a)-rank(b));f.q[v]=f.q[v]||1}else f.sizes.splice(i,1);szUI();return true}
-  const qd=t.closest('[data-qd]');if(qd){const v=qd.dataset.qd;f.q[v]=Math.max(1,(f.q[v]||1)-1);szUI();return true}
-  const qu=t.closest('[data-qu]');if(qu){const v=qu.dataset.qu;f.q[v]=Math.min(99,(f.q[v]||1)+1);szUI();return true}
-  const es=t.closest('[data-es]');
-  if(es){f.sep=es.dataset.es==='1';document.querySelectorAll('[data-es]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.es==='1')===f.sep)));$('#ppBox').style.display=f.sep?'block':'none';return true}
-  return false;
-}
+function renderPh(){$('#eph').innerHTML=f.ids.map((id,i)=>`<div class="t"><img src="${th(id,200)}" alt=""><button data-rm="i${i}">×</button></div>`).join('')+f.files.map((x,i)=>`<div class="t"><img src="${x.u}" alt=""><button data-rm="n${i}">×</button></div>`).join('')+'<button class="t add" id="addPh">+</button>'}
 function openEdit(id){
-  const s=id?A.sets.find(x=>String(x.id)===String(id)):{active:'Y',isNew:'Y'};
-  const sizes=String(s.sizes||'').split(',').map(x=>x.trim()).filter(Boolean);
-  f={e:{...s},photos:pics(s),pending:[],sizes:sizes.length||id?sizes:['S','M'],q:qmap(s),sep:+s.pp>0};
-  f.sizes.sort((a,b)=>rank(a)-rank(b));f.sizes.forEach(z=>{f.q[z]=f.q[z]||1});
+  const s=id?A.sets.find(x=>String(x.id)===String(id)):{active:'Y',sizes:'S,M',isNew:'Y'};
+  f={e:{...s},ids:pics(s),files:[]};
   const ck=(i,v,t)=>`<label><input type="checkbox" id="${i}" ${v?'checked':''} style="width:auto"> ${t}</label>`;
-  const cs=[...CATS];if(s.cat&&!cs.includes(s.cat))cs.push(s.cat);
-  $('#sheet').innerHTML=`<button class="x" id="close">×</button><h1>${id?'แก้ไขสินค้า':'เพิ่มสินค้าใหม่'}</h1>
-  <label>รูปสินค้า <b id="pcnt"></b> (สูงสุด ${MAXP} รูป กด + เพิ่มได้ รูปแรก = รูปปก)</label><div class="pgrid" id="pgrid"></div>
-  <label>ชื่อสินค้า</label><input id="eName" value="${esc(s.name)}">
-  <label>รหัสสินค้า</label><input id="eCode" value="${esc(s.code)}">
-  <label>แบรนด์ของสินค้า</label><input id="eBrand" value="${esc(s.brand)}">
-  <label>หมวดหมู่</label><select id="eCat"><option value="">- ไม่ระบุ -</option>${cs.map(c=>`<option ${s.cat===c?'selected':''}>${esc(c)}</option>`).join('')}</select>
-  <label>ไซส์และจำนวนชุด (กดเลือกไซส์ที่มี)</label><div id="szBox"></div>
-  <label>รูปแบบการเช่า</label><div class="seg"><button type="button" data-es="0" aria-pressed="${!f.sep}">เซ็ทอย่างเดียว</button><button type="button" data-es="1" aria-pressed="${f.sep}">เซ็ท + เช่าแยกชิ้นได้</button></div>
-  <div id="ppBox" style="display:${f.sep?'block':'none'}"><label>ราคาเช่าแยกชิ้นต่อวัน (บาท)</label><input id="ePp" type="number" value="${s.pp||''}"></div>
-  <label>ราคาเช่าทั้งเซ็ท (บาท) ตามจำนวนวัน 1-5 วัน</label><div class="days">${[1,2,3,4,5].map(d=>`<input type="number" id="eP${d}" value="${s['p'+d]==null?'':s['p'+d]}" placeholder="${d} วัน">`).join('')}</div>
+  $('#sheet').innerHTML=`<button class="x" id="close">×</button><h1>${id?'แก้ไขชุด':'เพิ่มชุด'}</h1>
+  <label>ชื่อชุด</label><input id="eName" value="${esc(s.name)}"><label>รหัสชุด</label><input id="eCode" value="${esc(s.code)}">
+  <label>หมวดหมู่ (เลือกหรือพิมพ์ใหม่)</label><input id="eCat" list="catL" value="${esc(s.cat)}"><datalist id="catL">${cats().map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
+  <label>รูปชุด (กด + เพิ่มได้หลายรูป)</label><div class="eph" id="eph"></div><input id="ePhoto" type="file" accept="image/*" multiple hidden>
+  <label>ราคารวมตามจำนวนวัน (บาท) 1-5 วัน</label><div class="days">${[1,2,3,4,5].map(d=>`<input type="number" id="eP${d}" value="${s['p'+d]==null?'':s['p'+d]}" placeholder="${d}">`).join('')}</div>
+  <label>ราคาเช่าแยกชิ้นต่อวัน (ว่าง = ไม่ให้เช่าแยก)</label><input id="ePp" type="number" value="${s.pp||''}">
+  <label>ไซส์ที่มี (คั่นด้วยจุลภาค เช่น S,M)</label><input id="eSz" value="${esc(s.sizes)}">
   <label>ต้นทุนชุด (บาท)</label><input id="eCost" type="number" value="${s.cost||''}">
   ${ck('eNew',s.isNew==='Y','ป้าย "ใหม่"')}${ck('ePin',s.pin==='Y','ปักหมุด (สูงสุด 6 ชุด)')}${ck('eAct',s.active==='Y','แสดงในร้าน')}
   <div class="msg" id="msg"></div><button class="primary" id="eSave" style="width:100%;margin-top:14px">บันทึก</button>`;
-  phGrid();szUI();$('#ov').classList.add('on');
+  renderPh();$('#ov').classList.add('on');
 }
 async function saveEdit(){
-  const s=f.e,g=i=>$('#'+i).value.trim(),m=$('#msg'),wasNew=!s.id;
-  if(!g('eName')||!g('eCode')){m.className='msg bad';m.textContent='กรอกชื่อและรหัสสินค้า';return}
-  if(!f.sizes.length){m.className='msg bad';m.textContent='เลือกไซส์อย่างน้อย 1 ไซส์';return}
-  Object.assign(s,{name:g('eName'),code:g('eCode'),brand:g('eBrand'),cat:$('#eCat').value,pp:f.sep?g('ePp'):'',sizes:f.sizes.join(','),qty:f.sizes.map(z=>z+':'+(f.q[z]||1)).join(','),cost:g('eCost'),isNew:$('#eNew').checked?'Y':'',pin:$('#ePin').checked?'Y':'',active:$('#eAct').checked?'Y':''});
+  const s=f.e,g=i=>$('#'+i).value.trim();
+  Object.assign(s,{name:g('eName'),code:g('eCode'),cat:g('eCat'),pp:g('ePp'),sizes:g('eSz'),cost:g('eCost'),isNew:$('#eNew').checked?'Y':'',pin:$('#ePin').checked?'Y':'',active:$('#eAct').checked?'Y':''});
   [1,2,3,4,5].forEach(d=>s['p'+d]=g('eP'+d));
-  if(f.sep&&!(+s.pp>0)){m.className='msg bad';m.textContent='ใส่ราคาเช่าแยกชิ้น';return}
+  const m=$('#msg');if(!s.name||!s.code){m.className='msg bad';m.textContent='กรอกชื่อและรหัสชุด';return}
   $('#eSave').disabled=true;m.className='msg';
   try{
-    const ids=[...f.photos];
-    for(let i=0;i<f.pending.length;i++){
-      m.textContent=`กำลังอัปโหลดรูป ${i+1}/${f.pending.length}...`;
-      const r=await post('photo',{pin:adm,img:await shrink(f.pending[i].file,1000)});
-      if(r.err||!r.id){m.className='msg bad';m.textContent=r.err||'อัปโหลดรูปไม่สำเร็จ';$('#eSave').disabled=false;return}
-      ids.push(r.id);
-    }
-    s.photo=ids.join(',');m.textContent='กำลังบันทึก...';
-    const r=await post('saveSet',{pin:adm,set:s});
+    for(let i=0;i<f.files.length;i++){m.textContent=`กำลังอัปโหลดรูป ${i+1}/${f.files.length}...`;const r=await post('upload',{img:await shrink(f.files[i].file,900)});if(r.err)throw r.err;f.ids.push(r.id)}
+    f.files=[];s.photos=f.ids.join(',');m.textContent='กำลังบันทึก...';
+    const r=await post('saveSet',{set:s});
     if(r.err){m.className='msg bad';m.textContent=r.err;$('#eSave').disabled=false;return}
-    await load();
-    const ns=A.sets.find(x=>x.code===s.code&&x.name===s.name)||s;
-    $('#sheet').innerHTML=`<button class="x" id="close">×</button><div class="done"><div class="ic">✅</div><h1>${wasNew?'เพิ่มสินค้าเรียบร้อย':'บันทึกเรียบร้อย'}</h1><div class="sum" style="text-align:left">
-    <div><span>ชื่อ / รหัส</span><span>${esc(s.name)} (${esc(s.code)})</span></div>
-    <div><span>แบรนด์</span><span>${esc(s.brand)||'-'}</span></div>
-    <div><span>หมวดหมู่</span><span>${esc(s.cat)||'-'}</span></div>
-    <div><span>รูปภาพ</span><span>${ids.length}/${MAXP} รูป</span></div>
-    <div><span>รูปแบบ</span><span>${f.sep?'เซ็ท + แยกชิ้น':'เซ็ทอย่างเดียว'}</span></div>
-    <div><span>ไซส์</span><span>${f.sizes.map(z=>esc(z)+' ×'+(f.q[z]||1)).join(', ')}</span></div>
-    <div><span>มีทั้งหมด</span><span>${total(ns)} ชุด</span></div>
-    <div><span>ว่างวันนี้</span><span>${leftAll(ns)} ชุด</span></div></div>
-    <button class="primary" id="again" style="margin-top:16px;width:100%">+ เพิ่มสินค้าอีกชิ้น</button>
-    <button class="lite" id="close" style="margin-top:8px;width:100%">ปิด</button></div>`;
-  }catch(e){m.className='msg bad';m.textContent='บันทึกไม่สำเร็จ';$('#eSave').disabled=false}
+    $('#ov').classList.remove('on');await load();
+  }catch(e){m.className='msg bad';m.textContent=typeof e==='string'?e:'บันทึกไม่สำเร็จ';$('#eSave').disabled=false}
 }
-function openPin(){
-  f={};
-  $('#sheet').innerHTML=`<button class="x" id="close">×</button><h1>เข้าโหมดเจ้าของร้าน</h1><label for="pinIn">รหัสเจ้าของร้าน</label><input id="pinIn" type="password" inputmode="numeric" autocomplete="off"><div class="msg" id="msg"></div><button class="primary" id="pinGo" style="width:100%;margin-top:14px">เข้าสู่ระบบ</button>`;
-  $('#ov').classList.add('on');setTimeout(()=>$('#pinIn').focus(),50);
-}
-async function pinLogin(){
-  const p=$('#pinIn').value.trim(),m=$('#msg');if(!p)return;
-  m.className='msg';m.textContent='กำลังตรวจสอบ...';$('#pinGo').disabled=true;
-  try{const r=await post('admin',{pin:p});
-    if(r.err){m.className='msg bad';m.textContent=r.err+(r.err.includes('รหัส')?' — ถ้าใส่ 9145 แล้วยังไม่ผ่าน แปลว่า Apps Script ยังเป็นเวอร์ชันเก่า ต้องวาง Code.gs ใหม่แล้ว Deploy เวอร์ชันใหม่':'');$('#pinGo').disabled=false;return}
-    adm=p;A=r;view='sets';$('#ov').classList.remove('on');render();
-  }catch(e){m.className='msg bad';m.textContent='เชื่อมต่อไม่ได้ ลองใหม่อีกครั้ง';$('#pinGo').disabled=false}
-}
-$('#sheet').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='pinIn')pinLogin()});
 document.addEventListener('click',async e=>{
   const t=e.target;
-  const rl=t.closest('[data-role]');if(rl)return setRole(rl.dataset.role);
-  if(t.closest('#lgo'))return submitLogin();
-  if(editClick(t))return;
-  if(t.closest('[data-add]')||t.closest('#again')){side(false);return openEdit(null)}
-  if(t.id==='menuBtn'||t.closest('#menuBtn'))return side(true);
-  if(t.id==='scrim')return side(false);
-  const n=t.closest('[data-n]');if(n){view=n.dataset.n;side(false);return render()}
-  const c=t.closest('[data-c]');if(c){cat=c.dataset.c;if(view==='ord'||view==='cus')view='sets';side(false);return render()}
-  const z=t.closest('[data-z]');if(z){sz=z.dataset.z;if(view==='ord'||view==='cus')view='sets';side(false);return render()}
-  if(t.closest('#admBtn'))return logout();
-  if(t.closest('#pinGo'))return pinLogin();
-  if(t.closest('#close')||t.id==='ov')return $('#ov').classList.remove('on');
+  const lr=t.closest('#lgRole [data-r]');if(lr){loginRole=lr.dataset.r;document.querySelectorAll('#lgRole button').forEach(b=>b.setAttribute('aria-pressed',String(b===lr)));return}
+  if(t.closest('#lgGo'))return enter(loginRole,$('#lgPw').value.trim());
+  if(t.closest('#menu'))return $('#side').classList.toggle('on');
+  const n=t.closest('#nav [data-t]');if(n){if(n.dataset.t==='out')return logout();tab=n.dataset.t;if(tab==='shop')cat=n.dataset.c;$('#side').classList.remove('on');return render()}
+  const zt=t.closest('[data-z]');if(zt){sz=zt.dataset.z;return render()}
+  if(t.closest('#close')||t.closest('#close2')||t.id==='ov')return $('#ov').classList.remove('on');
   if(t.closest('#addSet'))return openEdit(null);
-  const rm=t.closest('[data-rm]');if(rm){f.photos.splice(+rm.dataset.rm,1);return phGrid()}
-  const rp=t.closest('[data-rp]');if(rp){URL.revokeObjectURL(f.pending[+rp.dataset.rp].url);f.pending.splice(+rp.dataset.rp,1);return phGrid()}
-  const cd=t.closest('#view [data-s]');if(cd)return adm?openEdit(cd.dataset.s):openSet(cd.dataset.s);
-  const od=t.closest('[data-o]');if(od){await post('status',{pin:adm,id:od.dataset.o,status:od.dataset.v});return load()}
+  const c=t.closest('#view [data-s]');if(c)return adm()?openEdit(c.dataset.s):openSet(c.dataset.s);
+  const od=t.closest('[data-o]');if(od){await post('status',{id:od.dataset.o,status:od.dataset.v});return load()}
+  if(t.closest('#addPh'))return $('#ePhoto').click();
+  const rm=t.closest('[data-rm]');if(rm){const i=+rm.dataset.rm.slice(1);rm.dataset.rm[0]==='i'?f.ids.splice(i,1):f.files.splice(i,1);return renderPh()}
   const k=t.closest('#sheet [data-k]');if(k&&!k.disabled){f[k.dataset.k]=k.dataset.v;return calc()}
   const d=t.closest('#days [data-d]');if(d&&!d.disabled){f.days=+d.dataset.d;return calc()}
   if(t.closest('#save'))return submit();
   if(t.closest('#eSave'))return saveEdit();
 });
-$('#sheet').addEventListener('input',e=>{
-  if(e.target.id==='fTel'){e.target.value=e.target.value.replace(/\D/g,'').slice(0,10);if(e.target.value.length<10)$('#cust').textContent=''}
-});
 $('#sheet').addEventListener('change',async e=>{
   if(e.target.id==='fDate')calc();
-  if(e.target.id==='ePhotos'){addPhotos(e.target.files);e.target.value=''}
-  if(e.target.id==='fTel'&&/^\d{10}$/.test(e.target.value)){try{const r=await post('lookup',{tel:e.target.value});$('#cust').textContent=r.name?'ลูกค้าเก่า: '+r.name:'ลูกค้าใหม่';if(r.name&&!$('#fName').value)$('#fName').value=r.name}catch(x){}}
+  if(e.target.id==='ePhoto'){[...e.target.files].forEach(x=>f.files.push({file:x,u:URL.createObjectURL(x)}));e.target.value='';renderPh()}
+  if(e.target.id==='fTel'&&/^\d{10}$/.test(e.target.value.trim())){try{const r=await post('lookup',{tel:e.target.value.trim()});$('#cust').textContent=r.name?'ลูกค้าเก่า: '+r.name:'ลูกค้าใหม่';if(r.name&&!$('#fName').value)$('#fName').value=r.name}catch(x){}}
 });
+$('#sheet').addEventListener('input',e=>{if(e.target.id==='fTel')e.target.value=e.target.value.replace(/\D/g,'').slice(0,10)});
+$('#lgPw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lgGo').click()});
 $('#q').oninput=render;
-const store={get(){try{return JSON.parse(localStorage.getItem('nb_sess'))}catch(e){return null}},set(v){try{v?localStorage.setItem('nb_sess',JSON.stringify(v)):localStorage.removeItem('nb_sess')}catch(e){}}};
-function setRole(r){loginRole=r;document.querySelectorAll('[data-role]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.role===r)));$('#lcode').placeholder=r==='owner'?'รหัสเจ้าของร้าน':'รหัสลูกค้า'}
-function showLogin(msg){$('#login').style.display='flex';$('#lcode').value='';$('#lmsg').textContent=msg||'';$('#lgo').disabled=false}
-async function doLogin(role,code){
-  try{const r=await post('login',{role,code});
-    if(r.err)return r.err+' (ถ้ารหัสถูกต้องแล้วยังไม่ผ่าน ให้ Deploy Apps Script เวอร์ชันใหม่)';
-    sess={role,code};store.set(sess);adm=role==='owner'?code:null;view='sets';cat='all';sz='all';
-    $('#login').style.display='none';await load();return '';
-  }catch(e){return location.hostname.endsWith('github.io')?'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ตรวจอินเทอร์เน็ต และเช็กว่า Apps Script Deploy เป็นเวอร์ชันใหม่แล้ว':'หน้านี้เป็นตัวอย่างในแชท เชื่อมต่อระบบจริงไม่ได้ ให้เปิดที่ https://khnon6-create.github.io แทน'}
-}
-async function submitLogin(){
-  const code=$('#lcode').value.trim(),m=$('#lmsg');if(!code){m.textContent='กรอกรหัสก่อน';return}
-  m.textContent='กำลังเข้าสู่ระบบ...';$('#lgo').disabled=true;
-  const err=await doLogin(loginRole,code);if(err){m.textContent=err;$('#lgo').disabled=false}
-}
-function logout(){sess=null;adm=null;store.set(null);A={sets:[],orders:[],customers:[]};sets=[];busy=[];$('#ov').classList.remove('on');side(false);render();showLogin()}
-$('#lcode').addEventListener('keydown',e=>{if(e.key==='Enter')submitLogin()});
-function boot(){
-  $('#lbrand').textContent=BRAND;setRole('cust');render();
-  const s=store.get();
-  if(s&&s.code){$('#lmsg').textContent='กำลังเข้าสู่ระบบ...';setRole(s.role);doLogin(s.role,s.code).then(m=>{if(m){store.set(null);showLogin(m)}})}
-}
-boot();
+$('#vd').onchange=e=>{V=e.target.value?dn(e.target.value):T;render()};
+try{const k=JSON.parse(sessionStorage.getItem('k'));if(k)enter(k[0],k[1])}catch(e){}
 </script>
 </body>
 </html>

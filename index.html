@@ -66,7 +66,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;bo
       <div class="brand-sub" id="today">ระบบเช่าชุดออนไลน์</div>
     </div>
     <div class="menu-list" id="tabs"></div>
-    <button class="lite" id="roleBtn" style="margin-top:auto">เปลี่ยนประเภทผู้ใช้</button>
+    <button class="lite" id="roleBtn" style="margin-top:auto">โหมด: ลูกค้า</button>
   </aside>
   <div class="main-content">
     <header><h1>คลังสินค้า</h1></header>
@@ -100,7 +100,6 @@ function shrink(file,max){return new Promise(r=>{const i=new Image();i.onload=()
 async function load(){try{const r=await(await fetch(API)).json();sets=r.sets;busy=r.busy}catch(e){alert('เชื่อมต่อ Google Sheets ไม่ได้')}if(adm)await loadAdmin();render()}
 async function loadAdmin(){const r=await post('admin',{pin:adm});if(r.err){alert(r.err);adm=null;return}A=r}
 
-// หน้าต่างเลือกประเภทผู้ใช้งานตอนเข้าเว็บ
 function showRoleModal(){
   $('#sheet').innerHTML=`
     <h2 style="margin-top:0;color:var(--wine)">เลือกประเภทผู้ใช้งาน</h2>
@@ -126,7 +125,8 @@ function ordersHtml(){const l=[...A.orders].reverse();return l.length?l.map(o=>{
 function custHtml(){return A.customers.length?A.customers.map(c=>`<div class="bk"><h3>${esc(c.name)} ${tag((+c.count)<=1)}</h3><p>โทร ${esc(c.tel)} · จอง ${c.count} ครั้ง · รวม ฿${c.total}</p></div>`).join(''):'<div class="empty">ยังไม่มีลูกค้า</div>'}
 
 function render(){
-  const cats=[...new Set(sets.map(s=>s.category).filter(Boolean))];
+  const targetSets = adm ? A.sets : sets;
+  const cats=[...new Set(targetSets.map(s=>s.category).filter(Boolean))];
   let t=[['all','ชุดทั้งหมด'],['free','ว่างวันนี้']];
   cats.forEach(c=>t.push(['cat_'+c, c]));
   if(adm){t.push(['ord','ออเดอร์']);t.push(['cus','ลูกค้า']);}
@@ -212,12 +212,12 @@ async function submit(){
   }catch(e){bad('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');$('#save').disabled=false}
 }
 function openEdit(id){
-  const s=id?A.sets.find(x=>String(x.id)===String(id)):{active:'Y',sizes:'S,M',isNew:'Y',category:'ทั่วไป'};f={e:{...s}};
+  const s=id?A.sets.find(x=>String(x.id)===String(id)):{active:'Y',sizes:'S,M',isNew:'Y',category:'ชุดเซ็ท'};f={e:{...s}};
   const ck=(i,v,t)=>`<label><input type="checkbox" id="${i}" ${v?'checked':''} style="width:auto"> ${t}</label>`;
   $('#sheet').innerHTML=`<button class="x" id="close">×</button><h1>${id?'แก้ไขข้อมูลชุด':'เพิ่มชุดใหม่'}</h1>
   <label>ชื่อชุด</label><input id="eName" value="${esc(s.name)}">
   <label>รหัสชุด</label><input id="eCode" value="${esc(s.code)}">
-  <label>หมวดหมู่ / ประเภทชุด (เช่น ชุดคาเฟ่, ชุดราตรี)</label><input id="eCat" value="${esc(s.category||'')}">
+  <label>หมวดหมู่ / ประเภทชุด (เช่น ชุดเซ็ท, ชุดคาเฟ่, ชุดราตรี)</label><input id="eCat" value="${esc(s.category||'ชุดเซ็ท')}">
   <label>ราคารวมตามจำนวนวัน (บาท) 1-5 วัน</label><div class="days">${[1,2,3,4,5].map(d=>`<input type="number" id="eP${d}" value="${s['p'+d]==null?'':s['p'+d]}" placeholder="${d}วัน">`).join('')}</div>
   <label>ราคาเช่าแยกชิ้นต่อวัน (บาท)</label><input id="ePp" type="number" value="${s.pp||''}">
   <label>ไซส์ที่มี (คั่นด้วยจุลภาค เช่น S,M,L)</label><input id="eSz" value="${esc(s.sizes)}">
@@ -245,14 +245,14 @@ async function saveEdit(){
     const r=await post('saveSet',{pin:adm,set:s,photos:base64Photos});
     if(r.err){m.className='msg bad';m.textContent=r.err;$('#eSave').disabled=false;return}
     $('#ov').classList.remove('on');await load();
-  }catch(e){m.className='msg bad';m.textContent='บันทึกไม่สำเร็จ';$('#eSave'].disabled=false}
+  }catch(e){m.className='msg bad';m.textContent='บันทึกไม่สำเร็จ';$('#eSave').disabled=false}
 }
 
 document.addEventListener('click',async e=>{
   const t=e.target;
   const tb=t.closest('[data-t]');if(tb){tab=tb.dataset.t;return render()}
   if(t.closest('#roleBtn'))return showRoleModal();
-  if(t.closest('#close')||t.id==='ov')return; // ป้องกันการกดปิด popup เลือกรถ/เลือกประเภทเองถ้ายังไม่ได้เลือก
+  if(t.closest('#close'))return $('#ov').classList.remove('on');
   if(t.closest('#addSetBtn'))return openEdit(null);
   const c=t.closest('#view [data-s]');if(c)return adm?openEdit(c.dataset.s):openSet(c.dataset.s);
   const od=t.closest('[data-o]');if(od){await post('status',{pin:adm,id:od.dataset.o,status:od.dataset.v});return load()}
@@ -288,7 +288,7 @@ document.addEventListener('change',async e=>{
 });
 
 $('#q').oninput=render;
-load().then(()=>showRoleModal()); // เปิดเว็บมาจะเด้งหน้าเลือกประเภทผู้ใช้ทันที
+load().then(()=>showRoleModal());
 </script>
 </body>
 </html>

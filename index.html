@@ -1,107 +1,125 @@
-const PIN = '9145';        // รหัสเจ้าของร้าน
-const CUST_CODE = '1234';  // รหัสลูกค้า
-const NOTIFY = 'khnon6@gmail.com'; // อีเมลที่รับแจ้งเตือนออเดอร์ใหม่
-const HEAD = {
-  Sets: ['id','name','code','p1','p2','p3','p4','p5','pp','sizes','photo','isNew','pin','cost','views','active','cat','brand','qty'],
-  Orders: ['id','created','setId','part','size','name','tel','area','method','address','start','days','bs','be','total','slip','status','newCust','paytime'],
-  Customers: ['tel','name','first','count','total']
-};
-function ss_() {
-  const p = PropertiesService.getScriptProperties();
-  const id = p.getProperty('SSID');
-  if (id) { try { return SpreadsheetApp.openById(id); } catch (e) {} }
-  const ss = SpreadsheetApp.create('การจองเช่าชุด');
-  p.setProperty('SSID', ss.getId());
-  return ss;
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ระบบจองเช่าชุด</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf6f4;--card:#fff;--ink:#2a1a22;--mute:#7d6a73;--line:#eadfe2;--wine:#8a2f55;--wine2:#6e2243;--ok:#2e7d5b;--bad:#b3342f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#1b1217;--card:#27191f;--ink:#f6e9ee;--mute:#b79ba7;--line:#3b2831;--wine:#d0668f;--wine2:#b44f78;--ok:#55c394;--bad:#ff8a84}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Prompt,system-ui,sans-serif}
+button{font:inherit;cursor:pointer}
+.layout{display:flex;min-height:100vh}
+aside{width:230px;flex:none;background:var(--card);border-right:1px solid var(--line);padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+main{flex:1;min-width:0}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+.brand{font-size:20px;font-weight:600;color:var(--wine);padding:4px 8px 12px}
+.nh{font-size:12px;color:var(--mute);margin:14px 8px 4px}
+.nv{display:flex;justify-content:space-between;width:100%;text-align:left;background:none;border:0;color:var(--ink);padding:9px 10px;border-radius:10px}
+.nv small{color:var(--mute)}
+.nv[aria-pressed=true]{background:var(--wine);color:#fff}.nv[aria-pressed=true] small{color:#fff}
+#menuBtn{display:none}
+#login{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+.lbox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;width:100%;max-width:380px}
+.lbox .brand{text-align:center;font-size:26px}.lbox p{text-align:center;margin:0 0 12px}
+#ownerBar{display:none;margin:12px 0 0;padding:12px;border:2px solid var(--wine);border-radius:14px;background:var(--card)}
+#ownerBar b{display:block;margin-bottom:8px;color:var(--wine)}
+#ownerBar .r{display:flex;gap:8px;flex-wrap:wrap}#ownerBar .r button{flex:1 1 30%}
+#ownerBar .big{width:100%;font-size:17px;padding:14px;margin-bottom:8px}
+#fab{display:none;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;border-radius:30px;padding:14px 20px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.qrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+#scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:19}
+@media(max-width:759px){
+ aside{position:fixed;left:0;top:0;bottom:0;height:auto;z-index:20;transform:translateX(-100%);transition:transform .2s;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+ aside.on{transform:none}#scrim.on{display:block}#menuBtn{display:inline-block}
 }
-function tab_(n) {
-  const ss = ss_(); let s = ss.getSheetByName(n);
-  if (!s) {
-    s = ss.insertSheet(n); s.appendRow(HEAD[n]);
-    if (n === 'Orders') { s.getRange('G:G').setNumberFormat('@'); s.getRange('S:S').setNumberFormat('@'); }
-    if (n === 'Customers') s.getRange('A:A').setNumberFormat('@');
-    if (n === 'Sets') [['เซ็ท 10','D192'],['เซ็ท 10','D19'],['เซ็ท 9','D7V'],['เซ็ท 8','D7U'],['เซ็ท 7','D7T'],['เซ็ท 6','D7S'],['เซ็ท 5','D7R'],['เซ็ท 4','D7Q'],['เซ็ท 3','D7P']]
-      .forEach((x, i) => s.appendRow([i+1, x[0], x[1], 100, 200, 300, 400, 500, '', 'S,M', '', 'Y', '', 0, 0, 'Y', '']));
-  } else {
-    // เพิ่มคอลัมน์ใหม่ให้อัตโนมัติถ้าชีตเดิมยังไม่มี
-    const h = s.getRange(1, 1, 1, s.getLastColumn()).getValues()[0];
-    HEAD[n].forEach(k => {
-      if (h.indexOf(k) < 0) {
-        const c = s.getLastColumn() + 1;
-        s.getRange(1, c).setValue(k);
-        if (k === 'paytime') s.getRange(1, c, s.getMaxRows(), 1).setNumberFormat('@');
-      }
-    });
-  }
-  return s;
-}
-function hdr_(s) { return s.getRange(1, 1, 1, s.getLastColumn()).getValues()[0]; }
-function put_(s, o) { s.appendRow(hdr_(s).map(k => o[k] !== undefined ? o[k] : '')); }
-function rows_(n) {
-  const v = tab_(n).getDataRange().getValues(), h = v[0];
-  return v.slice(1).map((r, i) => { const o = { _row: i + 2 }; h.forEach((k, j) => o[k] = r[j]); return o; });
-}
-function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
-function fold_(n) { const i = DriveApp.getFoldersByName(n); return i.hasNext() ? i.next() : DriveApp.createFolder(n); }
-function save_(b64, name, pub) {
-  const f = fold_(pub ? 'ชุดเช่า-รูป' : 'ชุดเช่า-สลิป').createFile(Utilities.newBlob(Utilities.base64Decode(b64), 'image/jpeg', name + '.jpg'));
-  if (pub) f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  return f.getId();
-}
-function doGet() { return out_({ err: 'ต้องเข้าสู่ระบบก่อน' }); }
-function list_() {
-  const sets = rows_('Sets').filter(s => s.active === 'Y').map(s => { delete s.cost; delete s._row; return s; });
-  const busy = rows_('Orders').filter(o => o.status !== 'cancel').map(o => ({ setId: o.setId, part: o.part, size: String(o.size), bs: o.bs, be: o.be }));
-  return { sets, busy };
-}
-function doPost(e) {
-  const l = LockService.getScriptLock(); l.waitLock(15000);
-  try { return out_(act_(JSON.parse(e.postData.contents))); }
-  catch (x) { return out_({ err: String(x) }); }
-  finally { l.releaseLock(); }
-}
-function act_(d) {
-  if (d.a === 'login') return (d.role === 'owner' ? String(d.code) === PIN : String(d.code) === CUST_CODE) ? { ok: 1, role: d.role } : { err: 'รหัสไม่ถูกต้อง' };
-  if (String(d.code) !== CUST_CODE && String(d.code) !== PIN && d.pin !== PIN) return { err: 'รหัสไม่ถูกต้อง' };
-  if (d.a === 'list') return list_();
-  if (d.a === 'view') { const r = rows_('Sets').find(s => String(s.id) === String(d.id)); if (r) { const t = tab_('Sets'); t.getRange(r._row, hdr_(t).indexOf('views') + 1).setValue((+r.views || 0) + 1); } return { ok: 1 }; }
-  if (d.a === 'lookup') { const c = rows_('Customers').find(c => String(c.tel) === String(d.tel)); return { name: c ? c.name : '' }; }
-  if (d.a === 'book') return book_(d);
-  if (d.pin !== PIN) return { err: 'รหัสไม่ถูกต้อง' };
-  if (d.a === 'admin') return { sets: rows_('Sets'), orders: rows_('Orders'), customers: rows_('Customers') };
-  if (d.a === 'photo') return { id: save_(d.img, 'set-' + Date.now() + '-' + Math.floor(Math.random() * 1000), true) };
-  if (d.a === 'saveSet') return saveSet_(d);
-  if (d.a === 'status') { const o = rows_('Orders').find(o => String(o.id) === String(d.id)); if (o) { const t = tab_('Orders'); t.getRange(o._row, hdr_(t).indexOf('status') + 1).setValue(d.status); } return { ok: 1 }; }
-  return { err: 'unknown' };
-}
-function book_(d) {
-  if (String(d.code) !== CUST_CODE) return { err: 'รหัสลูกค้าไม่ถูกต้อง' };
-  const x = d.o, ov = (p, q) => p === 'set' || q === 'set' || p === q;
-  if (!/^\d{10}$/.test(String(x.tel))) return { err: 'เบอร์โทรต้องเป็นตัวเลข 10 หลัก' };
-  if (!d.slip) return { err: 'กรุณาแนบสลิปโอนเงิน' };
-  const st0 = rows_('Sets').find(s => String(s.id) === String(x.setId)) || {}, qm = {};
-  String(st0.qty || '').split(',').forEach(p => { const i = p.lastIndexOf(':'); if (i > 0 && +p.slice(i + 1) > 0) qm[p.slice(0, i).trim()] = +p.slice(i + 1); });
-  const used = rows_('Orders').filter(b => b.status !== 'cancel' && String(b.setId) === String(x.setId) && ov(b.part, x.part) && String(b.size) === String(x.size) && b.bs <= x.be && b.be >= x.bs).length;
-  if (used >= (qm[String(x.size)] || 1)) return { err: 'ชุดหรือไซส์นี้ไม่ว่างในช่วงที่เลือก' };
-  const cs = tab_('Customers'), c = rows_('Customers').find(c => String(c.tel) === String(x.tel)), nw = !c;
-  if (c) cs.getRange(c._row, 1, 1, 5).setValues([[x.tel, c.name, c.first, (+c.count || 0) + 1, (+c.total || 0) + x.total]]);
-  else cs.appendRow([x.tel, x.name, new Date(), 1, x.total]);
-  const slip = save_(d.slip, 'slip-' + x.tel + '-' + Date.now(), false);
-  put_(tab_('Orders'), { id: Date.now(), created: new Date(), setId: x.setId, part: x.part, size: x.size, name: x.name, tel: x.tel, area: x.area, method: x.method, address: x.address, start: x.start, days: x.days, bs: x.bs, be: x.be, total: x.total, slip: slip, status: 'wait', newCust: nw ? 'Y' : '', paytime: x.paytime || '' });
-  const s = rows_('Sets').find(s => String(s.id) === String(x.setId)) || {};
-  const dt = n => Utilities.formatDate(new Date(n * 864e5), 'UTC', 'd/M/yyyy');
-  MailApp.sendEmail(NOTIFY, (nw ? '[ลูกค้าใหม่] ' : '[ลูกค้าเก่า] ') + 'ออเดอร์ใหม่ ' + x.name,
-    'ชุด: ' + s.name + ' (' + s.code + ') ไซส์ ' + x.size + ' ส่วน: ' + x.part + '\nลูกค้า: ' + x.name + ' โทร ' + x.tel +
-    '\nวิธีรับ: ' + x.method + ' ' + (x.address || '') + '\nใช้งาน ' + dt(x.start) + ' ' + x.days + ' วัน คืน ' + dt(x.be) +
-    '\nยอด ฿' + x.total + '\nโอนเมื่อ: ' + (x.paytime || '-') + '\nสลิป: https://drive.google.com/file/d/' + slip + '/view');
-  return { ok: 1, newCust: nw };
-}
-function saveSet_(d) {
-  const s = d.set, t = tab_('Sets'), all = rows_('Sets');
-  if (s.pin === 'Y' && all.filter(o => o.pin === 'Y' && String(o.id) !== String(s.id)).length >= 6) return { err: 'ปักหมุดได้สูงสุด 6 ชุด' };
-  const r = s.id ? all.find(o => String(o.id) === String(s.id)) : null, keep = r || {};
-  const id = r ? r.id : Math.max(0, ...all.map(o => +o.id)) + 1;
-  const row = hdr_(t).map(k => k === 'id' ? id : k === 'views' ? (keep.views || 0) : (s[k] !== undefined ? s[k] : (keep[k] !== undefined ? keep[k] : '')));
-  if (r) t.getRange(r._row, 1, 1, row.length).setValues([row]); else t.appendRow(row);
-  return { ok: 1 };
-}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hl{display:flex;align-items:center;gap:10px}
+h1{font-size:20px;margin:0;font-weight:600}h1 small{font-size:12px;color:var(--mute);font-weight:400}.sub{color:var(--mute);font-size:13px}
+.primary{background:var(--wine);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:500}.primary:disabled{opacity:.4}
+.lite{background:none;border:1px solid var(--line);color:var(--mute);border-radius:10px;padding:6px 10px;font-size:13px}
+#q{margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+.item{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;padding:0;color:inherit}.item.off{opacity:.5}
+.pic{aspect-ratio:3/4;position:relative;background:linear-gradient(#f5ece9,#efe3df);display:flex;align-items:center;justify-content:center}
+.pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.noimg{color:#a89096;font-size:13px}
+.badges{position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:4px}
+.cnt{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;border-radius:10px;padding:1px 8px}
+.b{background:var(--wine2);color:#fff;font-size:11px;border-radius:10px;padding:1px 8px;width:max-content}
+.info{padding:10px 12px}.name{font-weight:600}.code{color:var(--mute);font-size:12px}
+.szs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.sz{font-size:12px;border:1px solid var(--ok);color:var(--ok);border-radius:8px;padding:0 8px}
+.sz.out{border-color:var(--line);color:var(--mute);text-decoration:line-through;opacity:.7}
+.row{display:flex;justify-content:space-between;align-items:end;margin-top:6px}
+.price{color:var(--wine);font-weight:600;font-size:17px}.price small{color:var(--mute);font-weight:400;font-size:11px;display:block}
+.st{font-size:12px;border-radius:10px;padding:2px 8px}.free{background:#e3f4ec;color:var(--ok)}.busy{background:#fbe6e4;color:var(--bad)}
+.bk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}.bk.cx{opacity:.55}
+.bk h3{margin:0 0 4px;font-size:15px}.bk p{margin:2px 0;color:var(--mute);font-size:13px}.acts{display:flex;gap:8px;margin-top:8px}
+.ghost{background:none;border:1px solid var(--bad);color:var(--bad);border-radius:10px;padding:8px 12px}
+.empty{text-align:center;color:var(--mute);padding:40px 0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:30}.ov.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:560px;max-height:94%;overflow:auto;border-radius:20px 20px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin-bottom:6px}
+.gal img{flex:none;width:100%;max-height:380px;object-fit:cover;border-radius:12px;scroll-snap-align:center}
+.gh{font-size:12px;color:var(--mute);margin-bottom:8px;text-align:center}
+.pt{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0;text-align:center;font-size:13px}
+.pt div{background:var(--bg);border-radius:10px;padding:6px 2px}.pt b{display:block;font-weight:500;color:var(--mute);font-size:12px}.pt span{color:var(--wine);font-weight:600}
+label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
+input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.seg{display:flex;flex-wrap:wrap;gap:8px}.seg button,.days button{flex:1 1 28%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px}
+.seg button[aria-pressed=true],.days button[aria-pressed=true]{background:var(--wine);color:#fff;border-color:var(--wine)}
+.seg button:disabled,.days button:disabled{opacity:.3}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.sum{background:var(--bg);border-radius:12px;padding:12px;margin-top:14px;font-size:14px}
+.sum div{display:flex;justify-content:space-between}.sum .t{font-weight:600;font-size:17px;color:var(--wine);margin-top:6px}
+.msg{margin-top:10px;font-size:13px}.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+.x{float:right;background:none;border:0;font-size:24px;color:var(--mute)}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}
+.pth{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg);border:1px solid var(--line)}
+.pth img{width:100%;height:100%;object-fit:cover}
+.pth button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;line-height:1;padding:0}
+.pth i{position:absolute;left:3px;bottom:3px;background:var(--wine);color:#fff;font-size:10px;font-style:normal;border-radius:6px;padding:0 5px}
+.padd{aspect-ratio:1;border:2px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--mute);cursor:pointer;margin:0}
+.padd input{display:none}
+.done{text-align:center;padding:20px 0}.done .ic{font-size:54px}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside id="side"></aside>
+  <main><div class="wrap">
+    <header>
+      <div class="hl"><button class="lite" id="menuBtn" aria-label="เมนู">☰ เมนู</button><div><h1 id="title"></h1><div class="sub" id="today"></div></div></div>
+      <button class="lite" id="admBtn">เจ้าของร้าน</button>
+    </header>
+    <div id="ownerBar"></div>
+    <input id="q" placeholder="ค้นหาชื่อหรือรหัสชุด">
+    <div id="view"></div>
+    <div class="sub" style="text-align:center;margin:24px 0 8px">เวอร์ชัน 7 · 11 ต.ค. 2569</div>
+  </div></main>
+</div>
+<div id="login"><div class="lbox"><div class="brand" id="lbrand"></div><p class="sub">เลือกประเภทการเข้าใช้งาน</p>
+  <div class="seg"><button data-role="cust">👤 ลูกค้า</button><button data-role="owner">🏪 เจ้าของร้าน</button></div>
+  <label for="lcode">รหัสเข้าใช้งาน</label><input id="lcode" type="password" inputmode="numeric" autocomplete="off">
+  <div class="msg bad" id="lmsg"></div><button class="primary" id="lgo" style="width:100%;margin-top:14px">เข้าสู่ระบบ</button></div></div>
+<div id="scrim"></div>
+<button class="primary" id="fab" data-add>+ เพิ่มสินค้าใหม่</button>
+<div class="ov" id="ov"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<script>
+const API='https://script.google.com/macros/s/AKfycbwX5GXdSZOHyunymQqALuhPFLjzwjyPS1GuQbE4PyC2fydYnGneB-y9Xm0xGQT2USkMaA/exec';
+const BRAND='Nuea Brand';                             // <<< ชื่อแบรนด์/ร้าน แก้ตรงนี้ได้
+const CATS=['ชุดคาเฟ่','ชุดราตรี','ชุดไทย','ชุดทำงาน','อื่นๆ']; // <<< แก้หมวดหมู่ได้ตามต้องการ
+const SHIP_FEE=60,OUT_MIN=2,OUT_LEAD=2,OUT_BACK=2,IN_BACK=1;
+const $=s=>document.querySelector(s);
+const dn=s=>{const[a,b,c]=s.split('-').map(Number);return Date.UTC(a,b-1,c)/864e5};
+const iso=n=>new Date(n*864e5).toISOString().slice(0,10);
+const fmt=n=>new Date(n*864e5).toLocaleDateString('th-TH',{day:'numeric',month:'short',timeZone:'UTC'});
+const now=new Date(),todayStr=new Date(now-now.getTimezoneOffset()*6e4).toISOString().slice(0,10),T=dn(todayStr);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const post=(a,d)=>fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({a,code:sess&&sess.code,...d})}).then(r=>r.json());
+let sess=null,loginRole='cust',sets=[],busy=[],adm=null,A={sets:[],orders:[],customers:[]},view='sets',cat='all',sz='all',f={};
+const ov=(p,q)=>p==='set'||q==='set'||p===q;
+const szs=s=>{const a=String(s.sizes||'').split(',').map(x=>x.trim()).filter(Boolean);return a.length?a:['']};
+const qmap=s=>{const m={

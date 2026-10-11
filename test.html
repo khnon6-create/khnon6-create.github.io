@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ทดสอบ</title></head>
+<body style="font:17px system-ui;padding:16px">
+<h2>ทดสอบเชื่อมต่อ</h2>
+<button id="b" style="font-size:18px;padding:12px 24px">กดทดสอบ</button>
+<pre id="o" style="white-space:pre-wrap;word-break:break-all"></pre>
+<script>
+const API='https://script.google.com/macros/s/AKfycbyhzR0tO2LS8IOTkJLfcdqp99rUv35vOG6LXEKBja0x55kq7JgJ0iswkThbrmWewsTbCQ/exec';
+const o=document.getElementById('o');
+const log=t=>{o.textContent+=t+'\n'};
+document.getElementById('b').onclick=async()=>{
+  o.textContent='กำลังทดสอบ...\n';
+  try{await fetch(API,{mode:'no-cors'});log('ข้อ 1: ติดต่อ Google ได้')}catch(e){log('ข้อ 1: ติดต่อ Google ไม่ได้ '+e)}
+  try{const r=await fetch(API+'?c=1234');log('ข้อ 2: HTTP '+r.status);log((await r.text()).slice(0,250))}catch(e){log('ข้อ 2: ล้มเหลว '+e)}
+  try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({a:'lookup',c:'1234',tel:'0000000000'})});log('ข้อ 3: HTTP '+r.status);log((await r.text()).slice(0,250))}catch(e){log('ข้อ 3: ล้มเหลว '+e)}
+  log('จบการทดสอบ');
+};
+</script></body></html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ทดสอบ 2</title></head>
+<body style="font:17px system-ui;padding:16px">
+<h2>ทดสอบวิธีเชื่อมต่อ</h2>
+<button id="b" style="font-size:18px;padding:12px 24px">กดทดสอบ</button>
+<pre id="o" style="white-space:pre-wrap;word-break:break-all"></pre>
+<script>
+const API='https://script.google.com/macros/s/AKfycbyhzR0tO2LS8IOTkJLfcdqp99rUv35vOG6LXEKBja0x55kq7JgJ0iswkThbrmWewsTbCQ/exec';
+const o=document.getElementById('o'),log=t=>{o.textContent+=t+'\n'};
+const short=d=>JSON.stringify(d).slice(0,120);
+const jsonp=()=>new Promise((res,rej)=>{const cb='cb'+Date.now(),s=document.createElement('script');const t=setTimeout(()=>{s.remove();rej('หมดเวลา')},15000);window[cb]=d=>{clearTimeout(t);s.remove();res(d)};s.onerror=()=>{clearTimeout(t);s.remove();rej('โหลดสคริปต์ไม่ได้')};s.src=API+'?c=1234&callback='+cb;document.head.appendChild(s)});
+const iform=()=>new Promise((res,rej)=>{const id='f'+Date.now(),fr=document.createElement('iframe');fr.name=id;fr.style.display='none';const fm=document.createElement('form');fm.method='POST';fm.action=API;fm.target=id;const i=document.createElement('input');i.type='hidden';i.name='payload';i.value=JSON.stringify({a:'lookup',c:'1234',tel:'0000000000',_id:id});fm.appendChild(i);const h=e=>{if(e.data&&e.data.__id===id){clearTimeout(t);removeEventListener('message',h);res(e.data.r)}};addEventListener('message',h);const t=setTimeout(()=>{removeEventListener('message',h);rej('หมดเวลา')},20000);document.body.append(fr,fm);fm.submit()});
+document.getElementById('b').onclick=async()=>{
+  o.textContent='กำลังทดสอบ (ใช้เวลาไม่เกิน 1 นาที)...\n';
+  try{log('วิธี A (สคริปต์แท็ก): ผ่าน '+short(await jsonp()))}catch(e){log('วิธี A: ล้มเหลว '+e)}
+  try{log('วิธี B (ฟอร์มซ่อน): ผ่าน '+short(await iform()))}catch(e){log('วิธี B: ล้มเหลว '+e)}
+  try{const r=await fetch(API+'?c=1234');log('วิธี C (แบบเดิม): ผ่าน '+(await r.text()).slice(0,60))}catch(e){log('วิธี C (แบบเดิม): ล้มเหลว '+e)}
+  log('จบการทดสอบ');
+};
+</script></body></html>

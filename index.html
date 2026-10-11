@@ -63,6 +63,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;bo
 .eph img{width:100%;height:100%;object-fit:cover}.eph .t button{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:22px;height:22px;line-height:20px;padding:0}
 .eph .add{font-size:28px;color:var(--wine);cursor:pointer}
 .ok2{text-align:center;padding:10px 0}.ok2 .big{font-size:52px}
+.addc{display:flex;gap:8px;margin-top:8px}.addc button{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -79,14 +80,14 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;bo
   <main>
     <button class="lite" id="menu">☰ เมนู</button>
     <div class="sub" id="today"></div>
-    <div id="bar"><div class="bar"><label>ดูความว่างวันที่<input type="date" id="vd"></label><label>ค้นหา<input id="q" placeholder="ชื่อหรือรหัสชุด"></label></div><div class="tabs" id="szTabs"></div></div>
+    <div id="bar"><div class="bar"><label>ดูความว่างวันที่<input type="date" id="vd"></label><label>ค้นหา<input id="q" placeholder="ชื่อ รหัส หรือแบรนด์"></label></div><div class="tabs" id="szTabs"></div></div>
     <div id="view"></div>
   </main>
 </div>
 <div class="ov" id="ov"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <script>
 const BRAND='Nuea Brand';
-const CATS=['ชุดคาเฟ่','ชุดราตรี'];
+const CATS=['ชุดคาเฟ่','ชุดคอนเสิร์ต','ชุดราตรี'];
 const API='https://script.google.com/macros/s/AKfycbyhzR0tO2LS8IOTkJLfcdqp99rUv35vOG6LXEKBja0x55kq7JgJ0iswkThbrmWewsTbCQ/exec';
 const SHIP_FEE=60,OUT_MIN=2,OUT_LEAD=2,OUT_BACK=2,IN_BACK=1;
 const $=s=>document.querySelector(s);
@@ -142,7 +143,7 @@ async function load(){
 }
 
 const cardHtml=s=>{const zl=szs(s),any=zl.some(z=>free(s,z));
-return `<button class="item${s.active==='Y'?'':' off'}" data-s="${s.id}"><div class="pic">${ph(s)?`<img src="${ph(s)}" alt="">`:'<span class="noimg">ยังไม่มีรูป</span>'}<div class="badges">${s.cat?`<span class="b">${esc(s.cat)}</span>`:''}${s.isNew==='Y'?'<span class="b">ใหม่</span>':''}${s.pin==='Y'?'<span class="b">📌</span>':''}</div></div><div class="info"><div class="name">${esc(s.name)}</div><div class="code">${esc(s.code)}${adm()?' · 👁 '+(+s.views||0):''}</div><div class="zs">${zl.map(z=>`<span class="z${free(s,z)?'':' out'}">${esc(z)||'ฟรีไซส์'}</span>`).join('')}</div><div class="row"><div class="price">฿${s.p1||'-'}<small>ต่อวัน</small></div><span class="st ${any?'free':'busy'}">${any?'ว่าง':'หมด'}</span></div></div></button>`};
+return `<button class="item${s.active==='Y'?'':' off'}" data-s="${s.id}"><div class="pic">${ph(s)?`<img src="${ph(s)}" alt="">`:'<span class="noimg">ยังไม่มีรูป</span>'}<div class="badges">${s.cat?`<span class="b">${esc(s.cat)}</span>`:''}${s.isNew==='Y'?'<span class="b">ใหม่</span>':''}${s.pin==='Y'?'<span class="b">📌</span>':''}</div></div><div class="info"><div class="name">${esc(s.name)}</div>${s.brand?`<div class="sub">${esc(s.brand)}</div>`:''}<div class="code">${esc(s.code)}${adm()?' · 👁 '+(+s.views||0):''}</div><div class="zs">${zl.map(z=>`<span class="z${free(s,z)?'':' out'}">${esc(z)||'ฟรีไซส์'}</span>`).join('')}</div><div class="row"><div class="price">฿${s.p1||'-'}<small>ต่อวัน</small></div><span class="st ${any?'free':'busy'}">${any?'ว่าง':'หมด'}</span></div></div></button>`};
 const stTxt={wait:'รอตรวจสลิป/ยืนยัน',paid:'ยืนยันรับเงินแล้ว',cancel:'ยกเลิก'};
 const tag=n=>n?'<span class="b" style="display:inline-block">ลูกค้าใหม่</span>':'<span class="b" style="display:inline-block;background:#2e7d5b">ลูกค้าเก่า</span>';
 function ordersHtml(){const l=[...A.orders].reverse();return l.length?l.map(o=>{const s=A.sets.find(x=>String(x.id)===String(o.setId))||{name:'?',code:''};return `<div class="bk ${o.status==='cancel'?'cx':''}"><h3>${esc(s.name)} (${esc(s.code)}) ${tag(o.newCust==='Y')}</h3><p>${esc(o.name)} · ${esc(o.tel)}</p><p>${o.part==='set'?'ทั้งเซ็ท':o.part==='top'?'ชิ้นบน':'ชิ้นล่าง'} · ไซส์ ${esc(o.size)||'-'} · ${o.area==='out'?'ต่างจังหวัด':'ในจังหวัด'} (${{pickup:'นัดรับ',grab:'Grab',ship:'ส่งพัสดุ'}[o.method]})</p>${o.address?`<p>ที่อยู่: ${esc(o.address)}</p>`:''}<p>ใช้งาน ${fmt(o.start)} (${o.days} วัน) · คืน ${fmt(o.be)} · ฿${o.total}</p><p>จองเมื่อ ${new Date(o.created).toLocaleString('th-TH')}${o.paytime?' · โอนเมื่อ '+esc(String(o.paytime).replace('T',' ')):''}</p>${o.slip?`<p><a href="https://drive.google.com/file/d/${o.slip}/view" target="_blank" rel="noopener">ดูสลิป</a></p>`:'<p>ยังไม่มีสลิป</p>'}<p><b>${stTxt[o.status]||o.status}</b></p>${o.status!=='cancel'?`<div class="acts">${o.status!=='paid'?`<button class="primary" data-o="${o.id}" data-v="paid">ยืนยันรับเงิน</button>`:''}<button class="ghost" data-o="${o.id}" data-v="cancel">ยกเลิก</button></div>`:''}</div>`}).join(''):'<div class="empty">ยังไม่มีออเดอร์</div>'}
@@ -161,7 +162,7 @@ function render(){
   if(tab==='cus')return v.innerHTML=custHtml();
   let l=list().filter(s=>cat==='all'||s.cat===cat);
   const k=$('#q').value.trim().toLowerCase();
-  if(k)l=l.filter(s=>(s.name+' '+s.code).toLowerCase().includes(k));
+  if(k)l=l.filter(s=>(s.name+' '+s.code+' '+(s.brand||'')).toLowerCase().includes(k));
   if(sz)l=l.filter(s=>szs(s).includes(sz)&&free(s,sz));
   l.sort((a,b)=>(b.pin==='Y')-(a.pin==='Y'));
   v.innerHTML=(adm()?'<button class="primary" id="addSet" style="margin-bottom:10px">+ เพิ่มชุด</button>':'')+'<div class="grid">'+l.map(cardHtml).join('')+'</div>'+(l.length?'':'<div class="empty">ไม่พบชุดที่ว่างตามที่เลือก</div>');
@@ -173,7 +174,7 @@ function openSet(id){
   const fz=szs(s).find(z=>free(s,z));
   f={s,part:'set',size:fz!==undefined?fz:szs(s)[0],area:'in',method:'pickup',days:1};
   $('#sheet').innerHTML=`<button class="x" id="close" aria-label="ปิด">×</button>${pics(s).length?`<div class="gal">${pics(s).map(i=>`<img src="${th(i,800)}" alt="">`).join('')}</div>`:''}
-  <h1>${esc(s.name)} <small>${esc(s.code)}${s.cat?' · '+esc(s.cat):''}</small></h1>
+  <h1>${esc(s.name)} <small>${esc(s.code)}${s.brand?' · '+esc(s.brand):''}${s.cat?' · '+esc(s.cat):''}</small></h1>
   <div class="pt">${[1,2,3,4,5].map(d=>`<div><b>${d} วัน</b><span>฿${s['p'+d]||'-'}</span></div>`).join('')}</div>
   <label>เช่าแบบ</label><div class="seg"><button data-k="part" data-v="set">ทั้งเซ็ท</button>${+s.pp>0?`<button data-k="part" data-v="top">ชิ้นบน ฿${s.pp}/วัน</button><button data-k="part" data-v="bottom">ชิ้นล่าง ฿${s.pp}/วัน</button>`:''}</div>
   <label>ไซส์</label><div class="seg" id="gSize"></div>
@@ -227,13 +228,16 @@ async function submit(){
   }catch(e){bad(typeof e==='string'?e:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง');$('#save').disabled=false}
 }
 function renderPh(){$('#eph').innerHTML=f.ids.map((id,i)=>`<div class="t"><img src="${th(id,200)}" alt=""><button data-rm="i${i}">×</button></div>`).join('')+f.files.map((x,i)=>`<div class="t"><img src="${x.u}" alt=""><button data-rm="n${i}">×</button></div>`).join('')+'<button class="t add" id="addPh">+</button>'}
+function renderCat(){const cl=cats();if(f.e.cat&&!cl.includes(f.e.cat))cl.push(f.e.cat);$('#catSeg').innerHTML=cl.map(c=>`<button data-cat="${esc(c)}" aria-pressed="${f.e.cat===c}">${esc(c)}</button>`).join('')}
 function openEdit(id){
   const s=id?A.sets.find(x=>String(x.id)===String(id)):{active:'Y',sizes:'S,M',isNew:'Y'};
   f={e:{...s},ids:pics(s),files:[]};
   const ck=(i,v,t)=>`<label><input type="checkbox" id="${i}" ${v?'checked':''} style="width:auto"> ${t}</label>`;
   $('#sheet').innerHTML=`<button class="x" id="close">×</button><h1>${id?'แก้ไขชุด':'เพิ่มชุด'}</h1>
   <label>ชื่อชุด</label><input id="eName" value="${esc(s.name)}"><label>รหัสชุด</label><input id="eCode" value="${esc(s.code)}">
-  <label>หมวดหมู่ (เลือกหรือพิมพ์ใหม่)</label><input id="eCat" list="catL" value="${esc(s.cat)}"><datalist id="catL">${cats().map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
+  <label>แบรนด์</label><input id="eBrand" value="${esc(s.brand)}" placeholder="เช่น ชื่อแบรนด์ของชุดนี้">
+  <label>หมวดหมู่ (แตะเพื่อเลือก แตะซ้ำเพื่อยกเลิก)</label><div class="seg" id="catSeg"></div>
+  <div class="addc"><input id="eCatNew" placeholder="เพิ่มหมวดใหม่ เช่น ชุดแต่งงาน"><button class="lite" id="addCat">+ เพิ่ม</button></div>
   <label>รูปชุด (กด + เพิ่มได้หลายรูป)</label><div class="eph" id="eph"></div><input id="ePhoto" type="file" accept="image/*" multiple hidden>
   <label>ราคารวมตามจำนวนวัน (บาท) 1-5 วัน</label><div class="days">${[1,2,3,4,5].map(d=>`<input type="number" id="eP${d}" value="${s['p'+d]==null?'':s['p'+d]}" placeholder="${d}">`).join('')}</div>
   <label>ราคาเช่าแยกชิ้นต่อวัน (ว่าง = ไม่ให้เช่าแยก)</label><input id="ePp" type="number" value="${s.pp||''}">
@@ -241,11 +245,12 @@ function openEdit(id){
   <label>ต้นทุนชุด (บาท)</label><input id="eCost" type="number" value="${s.cost||''}">
   ${ck('eNew',s.isNew==='Y','ป้าย "ใหม่"')}${ck('ePin',s.pin==='Y','ปักหมุด (สูงสุด 6 ชุด)')}${ck('eAct',s.active==='Y','แสดงในร้าน')}
   <div class="msg" id="msg"></div><button class="primary" id="eSave" style="width:100%;margin-top:14px">บันทึก</button>`;
-  renderPh();$('#ov').classList.add('on');
+  renderPh();renderCat();$('#ov').classList.add('on');
 }
 async function saveEdit(){
   const s=f.e,g=i=>$('#'+i).value.trim();
-  Object.assign(s,{name:g('eName'),code:g('eCode'),cat:g('eCat'),pp:g('ePp'),sizes:g('eSz'),cost:g('eCost'),isNew:$('#eNew').checked?'Y':'',pin:$('#ePin').checked?'Y':'',active:$('#eAct').checked?'Y':''});
+  Object.assign(s,{name:g('eName'),code:g('eCode'),brand:g('eBrand'),pp:g('ePp'),sizes:g('eSz'),cost:g('eCost'),isNew:$('#eNew').checked?'Y':'',pin:$('#ePin').checked?'Y':'',active:$('#eAct').checked?'Y':''});
+  const nc=g('eCatNew');if(nc)s.cat=nc;
   [1,2,3,4,5].forEach(d=>s['p'+d]=g('eP'+d));
   const m=$('#msg');if(!s.name||!s.code){m.className='msg bad';m.textContent='กรอกชื่อและรหัสชุด';return}
   $('#eSave').disabled=true;m.className='msg';
@@ -270,6 +275,8 @@ document.addEventListener('click',async e=>{
   const od=t.closest('[data-o]');if(od){await post('status',{id:od.dataset.o,status:od.dataset.v});return load()}
   if(t.closest('#addPh'))return $('#ePhoto').click();
   const rm=t.closest('[data-rm]');if(rm){const i=+rm.dataset.rm.slice(1);rm.dataset.rm[0]==='i'?f.ids.splice(i,1):f.files.splice(i,1);return renderPh()}
+  const ct=t.closest('[data-cat]');if(ct){f.e.cat=f.e.cat===ct.dataset.cat?'':ct.dataset.cat;return renderCat()}
+  if(t.closest('#addCat')){const v=$('#eCatNew').value.trim();if(v){f.e.cat=v;$('#eCatNew').value='';renderCat()}return}
   const k=t.closest('#sheet [data-k]');if(k&&!k.disabled){f[k.dataset.k]=k.dataset.v;return calc()}
   const d=t.closest('#days [data-d]');if(d&&!d.disabled){f.days=+d.dataset.d;return calc()}
   if(t.closest('#save'))return submit();

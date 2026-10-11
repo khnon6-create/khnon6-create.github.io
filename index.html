@@ -28,7 +28,7 @@ main{flex:1;min-width:0;padding:16px;max-width:900px}
 .bar label{margin:0}.tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
 .tab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:5px 14px}
 .tab[aria-pressed=true]{background:var(--wine);color:#fff;border-color:var(--wine)}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr)}}
 .item{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;padding:0;color:inherit}.item.off{opacity:.5}
 .pic{aspect-ratio:3/4;position:relative;background:linear-gradient(#f5ece9,#efe3df);display:flex;align-items:center;justify-content:center}
 .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.noimg{color:#a89096;font-size:13px}
@@ -57,7 +57,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;bo
 .sum{background:var(--bg);border-radius:12px;padding:12px;margin-top:14px;font-size:14px}
 .sum div{display:flex;justify-content:space-between}.sum .t{font-weight:600;font-size:17px;color:var(--wine);margin-top:6px}
 .msg{margin-top:10px;font-size:13px}.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
-.x{float:right;background:none;border:0;font-size:24px;color:var(--mute)}
+.x{float:right;background:#0001;border:0;border-radius:50%;width:48px!important;height:48px;font-size:30px;line-height:1;color:var(--ink,#333);padding:0!important;display:flex;align-items:center;justify-content:center}
 .eph{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.eph .t{aspect-ratio:1;position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
 .eph img{width:100%;height:100%;object-fit:cover}.eph .t button{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:22px;height:22px;line-height:20px;padding:0}
 .eph .add{font-size:28px;color:var(--wine);cursor:pointer}
@@ -146,12 +146,12 @@ let theme={p:"n"},M=[],sets=[],busy=[],A={sets:[],orders:[],customers:[]},tab='s
 const adm=()=>role==='own';
 const ov=(p,q)=>p==='set'||q==='set'||p===q;
 const szs=s=>{const a=String(s.sizes||'').split(',').map(x=>x.trim()).filter(Boolean);return a.length?a:['']};
-const isBusy=(s,part,size,bs,be)=>busy.some(b=>String(b.setId)===String(s.id)&&ov(b.part,part)&&String(b.size)===size&&b.bs<=be&&b.be>=bs);
+const isBusy=(s,part,size,bs,be)=>busy.filter(b=>String(b.setId)===String(s.id)&&ov(b.part,part)&&String(b.size)===size&&b.bs<=be&&b.be>=bs).length>=(+s.qty||1);
 const free=(s,z)=>!isBusy(s,'set',z,V,V);
 const pics=s=>String(s.photos||s.photo||'').split(',').filter(Boolean);
 const th=(id,w)=>'https://drive.google.com/thumbnail?id='+id+'&sz=w'+w;
 const ph=s=>pics(s)[0]?th(pics(s)[0],600):'';
-const tl=v=>String(v==null?'':v).split(',').map(x=>+x.trim()).filter(x=>x>0);const canSplit=s=>+s.pp>0||tl(s.ptop).length>0||tl(s.pbot).length>0;const price=(s,part,d)=>{if(part==='set')return +s['p'+d]||0;const a=tl(part==='top'?s.ptop:s.pbot);return a[d-1]!==undefined?a[d-1]:(+s.pp||(a[0]||0))*d};
+const tl=v=>String(v==null?'':v).split(',').map(x=>+x.trim()).filter(x=>x>0);const canSplit=s=>+s.pcs>=2&&(+s.pp>0||tl(s.ptop).length>0||tl(s.pbot).length>0);const price=(s,part,d)=>{if(part==='set')return +s['p'+d]||0;const a=tl(part==='top'?s.ptop:s.pbot);return a[d-1]!==undefined?a[d-1]:(+s.pp||(a[0]||0))*d};
 const list=()=>adm()?A.sets:sets;
 const cats=()=>[...new Set([...CATS,...list().map(s=>s.cat).filter(Boolean)])];
 $('#today').textContent=new Date().toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
@@ -164,14 +164,14 @@ async function enter(r,c,nm){
     if(r==='cus'){if(!nm)throw 'กรอกชื่อของคุณ';const l=await post('login',{name:nm,dev});if(l.err)throw l.err==='DUP'?'ชื่อนี้มีผู้ใช้แล้ว ระบบแจ้งร้านให้แล้ว กรุณาติดต่อเพจร้านเพื่อรับชื่อใหม่ (เช่น '+nm+'_0001)':l.err;me=l.name;L=l.list}
     if(r==='own'){const x=await post('admin',{});if(x.err)throw x.err;if(!x.orders)throw 'Apps Script ยังเป็นโค้ดเวอร์ชันเก่า ให้วาง Code.gs ใหม่แล้ว Deploy เวอร์ชันใหม่';A=x;L=x.list}
     const x=L||await post('list',{});if(x.err)throw x.err;if(!x.sets)throw 'Apps Script ยังเป็นโค้ดเวอร์ชันเก่า ให้วาง Code.gs ใหม่แล้ว Deploy เวอร์ชันใหม่';
-    sets=x.sets;busy=x.busy;posters=x.posters||[];loadTheme(x.theme);role=r;tab='home';
+    sets=x.sets;busy=x.busy;posters=x.posters||[];PROMOS=x.promos||[];loadTheme(x.theme);role=r;tab='home';
     try{sessionStorage.setItem('k',JSON.stringify([r,c,nm]))}catch(e){}
     $('#login').hidden=true;$('#app').hidden=false;$('#vd').value=todayStr;$('#vd').min=todayStr;m.textContent='';render();
   }catch(e){code='';m.textContent=typeof e==='string'?e:'เกิดข้อผิดพลาด: '+e}
 }
 function logout(){try{sessionStorage.removeItem('k')}catch(e){}location.reload()}
 async function load(){
-  try{const r=await post('list',{});if(r.err)throw r.err;sets=r.sets;busy=r.busy;posters=r.posters||[];loadTheme(r.theme);if(adm()){const a=await post('admin',{});if(!a.err)A=a}}
+  try{const r=await post('list',{});if(r.err)throw r.err;sets=r.sets;busy=r.busy;posters=r.posters||[];PROMOS=r.promos||[];loadTheme(r.theme);if(adm()){const a=await post('admin',{});if(!a.err)A=a}}
   catch(e){alert('เชื่อมต่อ Google Sheets ไม่ได้')}
   render();
 }
@@ -194,7 +194,7 @@ function fx(){let L=document.getElementById('fx');if(L)L.remove();const k={sn:['
 
 function openSet(id){openSet0(id);try{extra(id)}catch(e){}}
 const qList=s=>busy.filter(b=>String(b.setId)===String(s.id)&&b.be>=V).sort((a,b)=>a.bs-b.bs);
-function extra(id){const s=sets.find(x=>String(x.id)===String(id));if(!s)return;const q=qList(s);
+function extra(id){try{$('#fDate').min=todayStr}catch(e){}const s=sets.find(x=>String(x.id)===String(id));if(!s)return;const q=qList(s);
  $('#sheet').insertAdjacentHTML('beforeend',(q.length?`<div class="bk"><h3>📋 คิวจอง</h3>${q.map((b,i)=>`<p>คิว ${i+1}: ${esc(b.n||'ลูกค้า')} · ${fmt(b.st||b.bs)} – ${fmt(b.be)}${b.size?' · ไซส์ '+esc(b.size):''}</p>`).join('')}</div>`:'')+`<div class="bk" id="rvB"><h3>💬 รีวิวจากลูกค้า</h3><div id="rvL" class="sub">กำลังโหลด...</div><textarea id="rvT" rows="2" style="width:100%" placeholder="เขียนรีวิว คำชม หรือข้อสงสัยเกี่ยวกับชุดนี้"></textarea><label class="lk pf">📸 แนบรูปที่ใส่แล้ว<input type="file" accept="image/*" id="rvF" hidden></label><div class="acts"><button class="primary" id="rvS">ส่งรีวิว</button></div></div>`);
  const L=()=>post('reviews',{setId:id}).then(r=>{const a=r.reviews||[];$('#rvL').innerHTML=a.length?a.map(x=>`<div style="background:#f4efe0;border-radius:12px;padding:8px 12px;margin:6px 0"><small>${esc(x.name)}${adm()?` · <a href="#" data-rd="${x.id}">ลบ</a>`:''}</small><div>${esc(x.text)}</div>${x.img?`<img src="${th(x.img,500)}" alt="" style="max-width:100%;border-radius:12px;display:block;margin-top:6px">`:''}</div>`).join(''):'ยังไม่มีรีวิว มาเป็นคนแรกนะ'}).catch(()=>{$('#rvL').textContent='โหลดรีวิวไม่สำเร็จ'});L();
  $('#rvL').onclick=async e=>{const a=e.target.closest('[data-rd]');if(a){e.preventDefault();await post('reviewDel',{id:a.dataset.rd});L()}};
@@ -216,35 +216,50 @@ function openCo(){const c=CART();CO=[];c.forEach(i=>{const s=sets.find(x=>String
 <div id="cMw"><label>การรับชุด</label><select id="cMeth" onchange="coDraw()"><option value="pickup">นัดรับที่ร้าน</option><option value="grab">ส่งผ่าน Grab</option></select></div>
 <div id="cAw"><label>ที่อยู่</label><textarea id="cAddr" rows="2"></textarea></div>
 <label>หมายเหตุถึงร้าน/คนส่ง (ไม่บังคับ)</label><textarea id="cNote" rows="2"></textarea>
-<label>วันใช้งานชุด</label><input type="date" id="cDate" onchange="coDraw()">
+<label>วันที่ใช้ชุด</label><input type="date" id="cDate" onchange="coDraw()">
 <label>จำนวนวันเช่า</label><select id="cDays" onchange="coDraw()">${[1,2,3,4,5].map(d=>`<option>${d}</option>`).join('')}</select>
 <label>ชื่อลูกค้า</label><input id="cName"><label>เบอร์โทร (10 หลัก)</label><input id="cTel" inputmode="numeric" maxlength="10"><label>อีเมล</label><input id="cEm" type="email">
 <div id="cSum" style="margin:12px 0;display:grid;gap:4px"></div>${pay}
 <label>แนบสลิปโอนเงิน (ยอดรวม)</label><input id="cSlip" type="file" accept="image/*"><label>โอนเงินเมื่อวันและเวลา</label><input id="cPay" type="datetime-local">
 <div class="msg" id="cMsg"></div><button class="primary" id="cGo" onclick="coSub()">ยืนยันจองทั้งหมด</button>`;
- const st=document.createElement('style');st.textContent='#cSum>div{display:flex;justify-content:space-between}#cSum .t{font-weight:800}';$('#sheet').appendChild(st);coDraw()}
+ const st=document.createElement('style');st.textContent='#cSum>div{display:flex;justify-content:space-between}#cSum .t{font-weight:800}';$('#sheet').appendChild(st);try{$('#cDate').min=todayStr}catch(e){}coDraw()}
 function coDraw(){const out=$('#cArea').value==='out';$('#cMw').style.display=out?'none':'block';$('#cAw').style.display=out||$('#cMeth').value!=='pickup'?'block':'none';
  const ds=$('#cDate').value,st=ds?dn(ds):0,days=Math.max(+$('#cDays').value||1,out?OUT_MIN:1);$('#cDays').value=days;const bs=st-(out?OUT_LEAD:0),be=st+days-1+(out?OUT_BACK:IN_BACK);
  const keep=[...document.querySelectorAll('.cSz')].map(e=>e.value);
  $('#coL').innerHTML=CO.map((s,i)=>{const zs=szs(s).filter(z=>!ds||!isBusy(s,'set',z,bs,be));return `<div class="bk"><b>${esc(s.code)} ${esc(s.name)}</b> · ฿${price(s,'set',days)||'-'}<br><select class="cSz">${zs.length?zs.map(z=>`<option value="${esc(z)}">${esc(z)||'ฟรีไซส์'}</option>`).join(''):'<option value="__x">ไม่ว่างในช่วงนี้</option>'}</select></div>`}).join('');
  document.querySelectorAll('.cSz').forEach((e,i)=>{if(keep[i]!==undefined&&[...e.options].some(o=>o.value===keep[i]))e.value=keep[i]});
- const sum=CO.reduce((a,s)=>a+price(s,'set',days),0),ship=out?SHIP_FEE:0;$('#cSum').innerHTML=`<div><span>ค่าเช่า ${CO.length} ชุด ${days} วัน</span><span>฿${sum}</span></div>`+(ship?`<div><span>ค่าจัดส่ง</span><span>฿${ship}</span></div>`:'')+`<div class="t"><span>รวม</span><span>฿${sum+ship}</span></div>`}
+ const K=coCalc();$('#cSum').innerHTML=`<div><span>ค่าเช่า ${CO.length} ชุด ${days} วัน</span><span>฿${K.sum}</span></div>`+(K.ship?`<div><span>ค่าจัดส่ง</span><span>฿${K.ship}</span></div>`:'')+(K.gd?`<div><span>ส่วนลดค่าส่ง Grab</span><span>−฿${K.gd}</span></div>`:'')+(K.best?`<div><span>🎁 ${esc(K.best.p.title)}</span><span>−฿${K.best.d}</span></div>`:'')+`<div class="t"><span>รวม</span><span>฿${K.totals.reduce((a,b)=>a+b,0)}</span></div>`}
 async function coSub(){const g=i=>$(i).value.trim(),m=$('#cMsg'),bad=x=>{m.className='msg bad';m.textContent=x};
- const out=$('#cArea').value==='out',method=out?'ship':$('#cMeth').value,ds=g('#cDate'),days=Math.max(+g('#cDays')||1,out?OUT_MIN:1),st=ds?dn(ds):0,bs=st-(out?OUT_LEAD:0),be=st+days-1+(out?OUT_BACK:IN_BACK),file=$('#cSlip').files[0],zs=[...document.querySelectorAll('.cSz')];
+ const out=$('#cArea').value==='out',method=out?'ship':$('#cMeth').value,ds=g('#cDate'),days=Math.max(+g('#cDays')||1,out?OUT_MIN:1),st=ds?dn(ds):0,bs=st-(out?OUT_LEAD:0),be=st+days-1+(out?OUT_BACK:IN_BACK),file=$('#cSlip').files[0],zs=[...document.querySelectorAll('.cSz')],K=coCalc();
  if(!ds)return bad('เลือกวันใช้งาน');if(st<T)return bad('เลือกวันย้อนหลังไม่ได้');if(out&&bs<T)return bad('ต่างจังหวัดต้องจองล่วงหน้าอย่างน้อย '+OUT_LEAD+' วัน');
  if(!g('#cName'))return bad('กรอกชื่อลูกค้า');if(!/^\d{10}$/.test(g('#cTel')))return bad('เบอร์โทรต้องเป็นตัวเลข 10 หลัก');if(method!=='pickup'&&!g('#cAddr'))return bad('กรอกที่อยู่');
  if(out&&!file)return bad('ต่างจังหวัดต้องแนบสลิป');if(file&&!g('#cPay'))return bad('ระบุวันและเวลาที่โอนเงิน');
  if(zs.some(e=>e.value==='__x'))return bad('มีชุดที่ไม่ว่างในช่วงที่เลือก ลองเปลี่ยนวัน');if(CO.some(s=>!price(s,'set',days)))return bad('มีชุดที่ยังไม่ได้ตั้งราคา');
  $('#cGo').disabled=true;m.className='msg';m.textContent='กำลังส่ง...';let ok=0;const n=CO.length;
  try{const sl=file?await shrink(file,1000):'';
-  for(let i=0;i<n;i++){const s=CO[i],o={setId:s.id,part:'set',size:zs[i].value,area:out?'out':'in',method,start:st,days,bs,be,total:price(s,'set',days)+(i===0&&out?SHIP_FEE:0),user:me,name:g('#cName'),tel:g('#cTel'),email:g('#cEm'),address:g('#cAddr'),note:(g('#cNote')+(n>1?' [จองพร้อมกัน '+n+' ชุด สลิปอยู่ที่ออเดอร์แรก]':'')).trim(),paytime:file?g('#cPay'):''};
+  for(let i=0;i<n;i++){const s=CO[i],o={setId:s.id,part:'set',size:zs[i].value,area:out?'out':'in',method,start:st,days,bs,be,total:K.totals[i],promo:i===0?K.pid:'',user:me,name:g('#cName'),tel:g('#cTel'),email:g('#cEm'),address:g('#cAddr'),note:(g('#cNote')+(n>1?' [จองพร้อมกัน '+n+' ชุด สลิปอยู่ที่ออเดอร์แรก]':'')).trim(),paytime:file?g('#cPay'):''};
    const r=await post('book',{o,slip:i===0?sl:''});if(r.err){bad(s.code+': '+r.err);break}ok++}
  }catch(e){bad('ส่งไม่สำเร็จ ลองใหม่อีกครั้ง')}
  if(ok){const c=CART();CO.slice(0,ok).forEach(s=>{const x=c.find(i=>String(i.id)===String(s.id));if(x)x.q--});CSAVE(c.filter(i=>i.q>0));CO=CO.slice(ok);await load()}
  if(ok===n)$('#sheet').innerHTML=`<button class="x" id="close">×</button><div class="ok2"><div class="big">✅</div><h1>จอง ${n} ชุดเรียบร้อย</h1><p class="sub">ใช้งาน ${fmt(st)} · คืนภายใน ${fmt(be)}</p><p>ร้านจะตรวจสลิปและยืนยันให้ ดูสถานะที่เมนูการจองของฉัน</p><button class="primary" id="close2">ปิด</button></div>`;
  else{$('#cGo').disabled=false;if(ok)coDraw()}}
+
+let PROMOS=[];
+const activePromos=()=>PROMOS.filter(p=>+p.start<=T&&+p.end>=T&&(!+p.limit||(+p.used||0)<+p.limit));
+const bestPromo=pr=>activePromos().filter(p=>p.type!=='bxg').map(p=>({p,d:p.type==='pct'?Math.round(pr*(+p.value)/100):Math.min(+p.value,pr)})).filter(x=>x.d>0).sort((a,b)=>b.d-a.d)[0];
+const promoDesc=p=>p.type==='pct'?`ลด ${p.value}% อัตโนมัติตอนจอง`:p.type==='bxg'?`ซื้อ ${p.buy} แถม 1 (ชิ้นที่ถูกที่สุดฟรี) เพิ่มชุดลงตะกร้า 🛒 แล้วกด "จองทุกชุดพร้อมกัน"`:`ลด ฿${p.value} อัตโนมัติตอนจอง`;
+const promoBanner=()=>{const a=PROMOS.filter(p=>+p.end>=T&&(!+p.limit||(+p.used||0)<+p.limit));return a.map(p=>`<div class="bk" style="border:2px dashed #e0407a"><b>🎁 ${esc(p.title)}</b><p>${promoDesc(p)}</p><p class="sub">${+p.start>T?'เริ่ม '+fmt(p.start):'ถึงวันที่ '+fmt(p.end)}${+p.limit?' · เหลือ '+Math.max(0,p.limit-(+p.used||0))+' สิทธิ์':''}</p></div>`).join('')};
+function coCalc(){const out=$('#cArea').value==='out',days=Math.max(+$('#cDays').value||1,out?OUT_MIN:1),pr=CO.map(s=>price(s,'set',days)),sum=pr.reduce((a,b)=>a+b,0),ship=out?SHIP_FEE:0,gd=(!out&&$('#cMeth').value==='grab'&&sum>=250)?30:0,sp=[...pr].sort((a,b)=>a-b);let best=null;
+ activePromos().forEach(p=>{let d=0;if(p.type==='bxg'){const k=Math.floor(CO.length/((+p.buy||2)+1));d=sp.slice(0,k).reduce((a,b)=>a+b,0)}else d=p.type==='pct'?Math.round(sum*(+p.value)/100):Math.min(+p.value,sum);if(d>0&&(!best||d>best.d))best={p,d}});
+ let rem=gd+(best?best.d:0);const totals=pr.map((x,i)=>{const t=x+(i===0?ship:0),c=Math.min(t,rem);rem-=c;return t-c});return{pr,sum,ship,gd,best,totals,days,out,pid:best?String(best.p.id):''}}
+const promoHtml=()=>`<h1>🎁 โปรโมชั่น</h1><div class="bk"><label>ชื่อโปร</label><input id="pT" placeholder="เช่น ลด 50 บาท 13-17 ต.ค."><label>ประเภท</label><select id="pY" onchange="document.getElementById('pBw').style.display=this.value==='bxg'?'block':'none'"><option value="amt">ลดเป็นบาท</option><option value="pct">ลดเป็น %</option><option value="bxg">ซื้อ N แถม 1 (แถมชิ้นที่ถูกที่สุด)</option></select><label>จำนวนเงิน หรือ เปอร์เซ็นต์ (ไม่ใช้กับแบบแถม)</label><input id="pV" type="number"><div id="pBw" style="display:none"><label>ซื้อกี่ชิ้น (2 = ซื้อ 2 แถม 1)</label><input id="pB" type="number" value="2"></div><label>เริ่มวันที่</label><input id="pS" type="date"><label>ถึงวันที่</label><input id="pE" type="date"><label>จำกัดสิทธิ์กี่คน (0 = ไม่จำกัด เช่น 20 คนแรก)</label><input id="pL" type="number" value="0"><div class="acts"><button class="primary" onclick="promoSave()">+ เพิ่มโปรโมชั่น</button></div></div>${(A.promos||[]).map(p=>`<div class="bk"><b>${esc(p.title)}</b><p>${promoDesc(p)}</p><p class="sub">${fmt(p.start)} – ${fmt(p.end)} · ใช้ไปแล้ว ${p.used||0}${+p.limit?'/'+p.limit:''}</p><button class="ghost" onclick="promoDel('${p.id}')">ลบ</button></div>`).join('')}`;
+async function promoSave(){const g=i=>document.getElementById(i).value;if(!g('pT').trim()||!g('pS')||!g('pE'))return alert('กรอกชื่อโปรและวันที่ให้ครบ');try{const r=await post('promoSave',{p:{title:g('pT'),type:g('pY'),value:g('pV'),buy:g('pB'),start:dn(g('pS')),end:dn(g('pE')),limit:g('pL')}});if(r.err)throw r.err;await load();render()}catch(e){alert(typeof e==='string'?e:'บันทึกไม่สำเร็จ')}}
+async function promoDel(id){if(!confirm('ลบโปรนี้?'))return;try{await post('promoDel',{id});await load();render()}catch(e){alert('ลบไม่สำเร็จ')}}
+const wipeHtml=()=>`<h1>🧹 ล้างข้อมูลทดสอบ</h1><div class="bk"><p>จะลบทั้งหมด: ออเดอร์/การจอง, ลูกค้าเก่า-ใหม่, รีวิว, แชท และรีเซ็ตยอดเข้าชม 👁 เป็น 0</p><p><b>ไม่ลบ:</b> ชุดสินค้า รูป ราคา โปสเตอร์ ธีม โปรโมชั่น และบัญชีลูกค้า</p><p class="sub">ลบแล้วกู้คืนไม่ได้</p><button class="primary" style="background:#c0392b" onclick="doWipe()">ล้างข้อมูลทดสอบ</button></div>`;
+async function doWipe(){if(prompt('พิมพ์คำว่า ล้าง เพื่อยืนยันการลบข้อมูลทั้งหมด')!=='ล้าง')return;try{const r=await post('wipe',{});if(r.err)throw r.err;await load();tab='shop';render();alert('ล้างข้อมูลแล้ว')}catch(e){alert(typeof e==='string'?e:'ล้างไม่สำเร็จ')}}
+document.addEventListener('click',e=>{const z=e.target.closest&&e.target.closest('#szTabs [data-z]');if(z){sz=z.dataset.z;render()}});
 const cardHtml=s=>{const zl=szs(s),any=zl.some(z=>free(s,z));
-return `<button class="item${s.active==='Y'?'':' off'}" data-s="${s.id}"><div class="pic">${ph(s)?`<img src="${ph(s)}" alt="">`:'<span class="noimg"></span>'}<span class="eye" data-cart="${s.id}">🛒</span><div class="badges">${s.cat?`<span class="b">${esc(s.cat)}</span>`:''}${s.isNew==='Y'?'<span class="b">ใหม่</span>':''}${s.pin==='Y'?'<span class="b">📌</span>':''}${s.active==='Y'?'':'<span class="b">ซ่อนอยู่</span>'}</div></div><div class="info"><div class="name">${esc(s.code)} ${esc(s.name)}</div><div class="r2"><span class="bn">${s.brand?'🏷 '+esc(s.brand):''}</span><span class="bn">${s.pcs?'🧺 '+esc(s.pcs)+' ชิ้นในเซ็ต':''}</span></div>${adm()?'<div class="code">👁 '+(+s.views||0)+'</div>':''}<div class="r2"><span class="sub">ต่อวัน</span><div class="price">฿${s.p1||'-'}</div></div><div class="r2"><span class="sb ${any?'free':'busy'}">${any?'ว่าง':'ติดคิวอยู่'+(qList(s).length?' '+qList(s).length+' คิว':'')}</span><div class="zs">${zl.map(z=>`<span class="z${free(s,z)?'':' out'}">${esc(z)||'ฟรีไซส์'}</span>`).join('')}</div></div></div></button>`};
+return `<button class="item${s.active==='Y'?'':' off'}" data-s="${s.id}"><div class="pic">${ph(s)?`<img src="${ph(s)}" alt="">`:'<span class="noimg"></span>'}<span class="eye" data-cart="${s.id}">🛒</span><div class="badges">${s.cat?`<span class="b">${esc(s.cat)}</span>`:''}${s.isNew==='Y'?'<span class="b">ใหม่</span>':''}${s.pin==='Y'?'<span class="b">📌</span>':''}${s.active==='Y'?'':'<span class="b">ซ่อนอยู่</span>'}</div></div><div class="info"><div class="name">${esc(s.code)} ${esc(s.name)}</div><div class="r2"><span class="bn">${s.brand?'🏷 '+esc(s.brand):''}</span><span class="bn">${s.pcs?'🧺 '+esc(s.pcs)+' ชิ้นในเซ็ต':''}</span></div>${+s.qty>1?'<div class="r2"><span class="bn">📦 มีทั้งหมด '+s.qty+' ตัว</span></div>':''}${adm()?'<div class="code">👁 '+(+s.views||0)+'</div>':''}<div class="r2"><span class="sub">ต่อวัน</span><div class="price">฿${s.p1||'-'}</div></div><div class="r2"><span class="sb ${any?'free':'busy'}">${any?'ว่าง':'ติดคิวอยู่'+(qList(s).length?' '+qList(s).length+' คิว':'')}</span><div class="zs">${(sz?zl.filter(z=>z===sz):zl).map(z=>`<span class="z${free(s,z)?'':' out'}">${esc(z)||'ฟรีไซส์'}</span>`).join('')}</div></div></div></button>`};
 const stTxt={wait:'รอตรวจสลิป/ยืนยัน',paid:'ยืนยันรับเงินแล้ว',cancel:'ยกเลิก',done:'✅ คืนชุดเรียบร้อย ตรวจสอบแล้ว'};
 const tag=n=>n?'<span class="b" style="display:inline-block">ลูกค้าใหม่</span>':'<span class="b" style="display:inline-block;background:#2e7d5b">ลูกค้าเก่า</span>';
 
@@ -275,13 +290,13 @@ const themeHtml=()=>`<h1>🎨 ธีมร้าน</h1><label>ชื่อแ�
 function ordersHtml(){const l=[...A.orders].reverse();return l.length?l.map(o=>{const s=A.sets.find(x=>String(x.id)===String(o.setId))||{name:'?',code:''};return `<div class="bk ${o.status==='cancel'?'cx':''}"><div class="car">${pics(s).map(id=>`<img src="${th(id,500)}" alt="">`).join('')}</div><h3>${esc(s.code)} ${esc(s.name)} ${tag(o.newCust==='Y')}</h3>${s.brand?`<p>🏷 ${esc(s.brand)}</p>`:''}<p>👤 ${esc(o.name)} · ${esc(o.tel)}${o.email?' · '+esc(o.email):''}${o.user?' · บัญชี '+esc(o.user):''}</p><p>${o.part==='set'?'ทั้งเซ็ท':o.part==='top'?'ชิ้นบน':'ชิ้นล่าง'} · ไซส์ ${esc(o.size)||'-'} · ${o.area==='out'?'ต่างจังหวัด':'ในจังหวัด'} (${{pickup:'นัดรับ',grab:'Grab',ship:'ส่งพัสดุ'}[o.method]})</p>${o.address?`<p>ที่อยู่: ${esc(o.address)}</p>`:''}${o.note?`<p>📝 หมายเหตุ: ${esc(o.note)}</p>`:''}<p>📅 ใช้งาน ${fmt(o.start)} (${o.days} วัน) · คืนก่อน ${fmt(o.be)} 18:00 น.</p><p>💰 ยอด ฿${o.total}</p><p>🕒 จองเมื่อ ${new Date(o.created).toLocaleString('th-TH')}${o.paytime?' · โอนเมื่อ '+esc(String(o.paytime).replace('T',' ')):''}</p>${o.slip?`<button class="lk" data-slip="${o.slip}">🧾 ดูสลิป</button>`:'<p>ยังไม่มีสลิป</p>'}${proofOwner(o)}<p><b>${o.status==='paid'?'<span class="okb">ยืนยันแล้ว</span> ลูกค้านัดรับที่ร้านได้':stTxt[o.status]||o.status}</b></p>${o.status!=='cancel'&&o.status!=='done'?`<div class="acts">${o.status==='paid'?`<button class="primary" data-o="${o.id}" data-v="done">✅ ตรวจสอบเสร็จ / ลูกค้าคืนชุดเรียบร้อย</button>`:''}${o.status!=='paid'?`<button class="primary" data-o="${o.id}" data-v="paid">ยืนยันรับเงิน</button>`:''}<button class="ghost" data-o="${o.id}" data-v="cancel">ยกเลิก</button></div>`:''}</div>`}).join(''):'<div class="empty">ยังไม่มีออเดอร์</div>'}
 const custHtml=()=>A.customers.length?A.customers.map(c=>`<div class="bk"><h3>${esc(c.name)} ${tag((+c.count)<=1)}</h3><p>โทร ${esc(c.tel)} · จอง ${c.count} ครั้ง · รวม ฿${c.total}</p></div>`).join(''):'<div class="empty">ยังไม่มีลูกค้า</div>';
 
-const homeHtml=()=>`<h1>${adm()?'หน้าหลัก':'สวัสดี '+esc(me)+' 👋'}</h1>${newStrip()}<div class="sub" style="margin:4px 0 12px">🎉 โปรโมชั่นวันนี้</div>${adm()?'<button class="primary" id="addPo" style="margin-bottom:12px">+ เพิ่มโปสเตอร์</button>':''}${posters.length?posters.map(p=>`<div class="po ${p.orient}"><img src="${th(p.photo,1200)}" alt="">${p.title?`<b>${esc(p.title)}</b>`:''}${adm()?`<button class="ghost" style="margin:0 0 8px" data-pd="${p.id}">ลบ</button>`:''}</div>`).join(''):'<div class="empty">ยังไม่มีโปรโมชั่น</div>'}`;
+const homeHtml=()=>`<h1>${adm()?'หน้าหลัก':'สวัสดี '+esc(me)+' 👋'}</h1>${newStrip()}<div class="sub" style="margin:4px 0 12px">🎉 โปรโมชั่นวันนี้</div>${promoBanner()}${adm()?'<button class="primary" id="addPo" style="margin-bottom:12px">+ เพิ่มโปสเตอร์</button>':''}${posters.length?posters.map(p=>`<div class="po ${p.orient}"><img src="${th(p.photo,1200)}" alt="">${p.title?`<b>${esc(p.title)}</b>`:''}${adm()?`<button class="ghost" style="margin:0 0 8px" data-pd="${p.id}">ลบ</button>`:''}</div>`).join(''):'<div class="empty">ยังไม่มีโปรโมชั่น</div>'}`;
 const usrHtml=()=>`<h1>บัญชีลูกค้า</h1><div class="sub">ชื่อซ้ำให้ตั้งชื่อใหม่ เช่น ลำไย_0001 แล้วแจ้งลูกค้า</div><div style="display:flex;gap:8px;margin:12px 0"><input id="uName" placeholder="เพิ่มชื่อ เช่น ลำไย_0001"><button class="primary" id="uAdd">เพิ่ม</button></div>${(A.users||[]).map(u=>`<div class="bk"><h3>${esc(u.name)}</h3><p>${u.dev?'มีผู้ใช้ชื่อนี้แล้ว':'ยังไม่มีผู้ใช้'}</p><div class="acts"><button class="lite" data-ur="${esc(u.name)}">รีเซ็ตเครื่อง</button><button class="ghost" data-ud="${esc(u.name)}">ลบ</button></div></div>`).join('')||'<div class="empty">ยังไม่มีบัญชี</div>'}`;
 function openPo(){f={};$('#sheet').innerHTML=`<button class="x" id="close">×</button><h1>เพิ่มโปสเตอร์</h1><label>หัวข้อ (ไม่ใส่ก็ได้)</label><input id="pT"><label>แนวภาพ</label><select id="pO"><option value="v">แนวตั้ง แนะนำ 1080×1350 px (4:5)</option><option value="h">แนวนอน แนะนำ 1920×1080 px (16:9)</option></select><label>รูปโปสเตอร์</label><input id="pF" type="file" accept="image/*"><div class="msg" id="msg"></div><button class="primary" id="pS" style="width:100%;margin-top:14px">บันทึก</button>`;$('#ov').classList.add('on')}
 async function savePo(){const m=$('#msg'),file=$('#pF').files[0];if(!file){m.className='msg bad';m.textContent='เลือกรูปก่อน';return}$('#pS').disabled=true;m.className='msg';m.textContent='กำลังอัปโหลด...';try{const u=await post('upload',{img:await shrink(file,1400)});if(u.err)throw u.err;const r=await post('poster',{photo:u.id,title:$('#pT').value.trim(),orient:$('#pO').value});if(r.err)throw r.err;$('#ov').classList.remove('on');await load()}catch(e){m.className='msg bad';m.textContent=typeof e==='string'?e:'บันทึกไม่สำเร็จ';$('#pS').disabled=false}}
 function render(){
   const nav=[['home','','🏠 หน้าหลัก'],['shop','all','🛍 ทั้งหมด'],...cats().map(c=>['shop',c,c,icOf(c)]),['shop','__set','🧥 ทั้งเซ็ต'],['shop','__split','✂️ แยกเซ็ต']];
-  if(adm())nav.push(['-'],['ord','','📋 ออเดอร์'],['cus','','👥 ลูกค้า'],['roi','','💰 คืนทุน'],['usr','','🔑 บัญชีลูกค้า'],['theme','','🎨 ธีมร้าน']);else nav.push(['-'],['mine','','📦 การจองของฉัน']);
+  if(adm())nav.push(['-'],['ord','','📋 ออเดอร์'],['cus','','👥 ลูกค้า'],['roi','','💰 คืนทุน'],['promo','','🎁 โปรโมชั่น'],['wipe','','🧹 ล้างข้อมูลทดสอบ'],['usr','','🔑 บัญชีลูกค้า'],['theme','','🎨 ธีมร้าน']);else nav.push(['-'],['mine','','📦 การจองของฉัน']);
   nav.push(['-'],['out','','ออกจากระบบ']);
   $('#nav').innerHTML=nav.map(n=>n[0]==='-'?'<hr>':`<button data-t="${n[0]}" data-c="${esc(n[1])}" aria-pressed="${n[0]===tab&&(tab!=='shop'||n[1]===cat)}">${n[3]?icoHtml(n[3])+' ':''}${esc(n[2])}</button>`).join('');
   const shop=tab==='shop';$('#bar').hidden=!shop;
@@ -290,7 +305,7 @@ function render(){
   const v=$('#view');
   if(tab==='home')return v.innerHTML=homeHtml();if(tab==='usr')return v.innerHTML=usrHtml();
   if(tab==='ord')return v.innerHTML=ordersHtml();if(tab==='mine')return v.innerHTML=mineHtml();if(tab==='theme')return v.innerHTML=themeHtml();
-  if(tab==='cus')return v.innerHTML=custHtml();if(tab==='roi')return v.innerHTML=roiHtml();
+  if(tab==='cus')return v.innerHTML=custHtml();if(tab==='roi')return v.innerHTML=roiHtml();if(tab==='promo')return v.innerHTML=promoHtml();if(tab==='wipe')return v.innerHTML=wipeHtml();
   let l=list().filter(s=>cat==='all'||(cat==='__set'?+s.pcs>=2:cat==='__split'?canSplit(s):s.cat===cat));
   const k=$('#q').value.trim().toLowerCase();
   if(k)l=l.filter(s=>(s.name+' '+s.code+' '+(s.brand||'')).toLowerCase().includes(k));
@@ -305,7 +320,7 @@ function openSet0(id){
   const fz=szs(s).find(z=>free(s,z));
   f={s,part:'set',size:fz!==undefined?fz:szs(s)[0],area:'in',method:'pickup',days:1};
   $('#sheet').innerHTML=`<button class="x" id="close" aria-label="ปิด">×</button>${pics(s).length?`<div class="gal" data-pv="${s.id}">${pics(s).map(i=>`<img src="${th(i,800)}" alt="">`).join('')}</div>`:''}
-  <h1>${esc(s.code)} ${esc(s.name)}</h1><div class="r2"><span class="bn">${s.brand?'🏷 แบรนด์ '+esc(s.brand):''}</span><span class="bn">${s.pcs?esc(s.pcs)+' ชิ้นในเซ็ต':''}</span></div>
+  <h1>${esc(s.code)} ${esc(s.name)}</h1><div class="r2"><span class="bn">${s.brand?'🏷 แบรนด์ '+esc(s.brand):''}</span><span class="bn">${s.pcs?esc(s.pcs)+' ชิ้นในเซ็ต':''}</span></div>${+s.qty>1?'<div class="r2"><span class="bn">📦 ร้านมี '+s.qty+' ตัว (จองพร้อมกันได้ถ้ายังเหลือ)</span></div>':''}
   <div class="pt">${[1,2,3,4,5].map(d=>`<div><b>${d} วัน</b><span>฿${s['p'+d]||'-'}</span></div>`).join('')}</div>
   <label>เช่าแบบ</label><div class="seg"><button data-k="part" data-v="set">ทั้งเซ็ท</button>${canSplit(s)?`<button data-k="part" data-v="top">ชิ้นบน ฿${price(s,'top',1)}/วัน</button><button data-k="part" data-v="bottom">ชิ้นล่าง ฿${price(s,'bottom',1)}/วัน</button>`:''}</div>${canSplit(s)?'<div class="pt">'+['top','bottom'].map(p=>[1,2,3,4,5].map(d=>price(s,p,d)>0?`<div><b>${p==='top'?'บน':'ล่าง'} ${d} วัน</b><span>฿${price(s,p,d)}</span></div>`:'').join('')).join('')+'</div>':''}
   <label>ไซส์</label><div class="seg" id="gSize"></div>
@@ -313,7 +328,7 @@ function openSet0(id){
   <label>การรับชุด</label><div class="seg" id="gMeth"></div>
   <div id="addrBox"><label for="fAddr">ที่อยู่</label><textarea id="fAddr" rows="2"></textarea></div>
   <label for="fNote">หมายเหตุถึงร้าน/คนส่ง (ไม่บังคับ) เช่น ให้ Grab ส่งตรงนี้</label><textarea id="fNote" rows="2"></textarea>
-  <label for="fDate">วันใช้งานชุด</label><input type="date" id="fDate">
+  <label for="fDate">วันที่ใช้ชุด</label><input type="date" id="fDate">
   <label>จำนวนวันเช่า</label><div class="days" id="days"></div>
   <label for="fName">ชื่อลูกค้า</label><input id="fName">
   <label for="fTel">เบอร์โทร (10 หลัก)</label><input id="fTel" inputmode="numeric" maxlength="10" placeholder="0812345678"><div class="sub" id="cust"></div>
@@ -338,12 +353,12 @@ function calc(){
   $('#days').innerHTML=[1,2,3,4,5].map(d=>`<button data-d="${d}" aria-pressed="${d===f.days}" ${d<min?'disabled':''}>${d}</button>`).join('');
   document.querySelectorAll('#sheet [data-k]').forEach(b=>b.setAttribute('aria-pressed',String(f[b.dataset.k])===b.dataset.v));
   $('#addrBox').style.display=f.method==='pickup'?'none':'block';
-  const pr=price(s,f.part,f.days),ship=out?SHIP_FEE:0,total=pr+ship;
-  $('#sum').innerHTML=`<div><span>ค่าเช่า ${f.days} วัน</span><span>฿${pr}</span></div>`+(ship?`<div><span>ค่าจัดส่ง</span><span>฿${ship}</span></div>`:'')+(f.method==='grab'?'<div><span>ค่า Grab</span><span>จ่ายตามจริง</span></div>':'')+`<div><span>คืนชุดภายใน</span><span>${ds?fmt(be)+' ก่อน 18:00 น.':'-'}</span></div><div class="t"><span>รวม</span><span>฿${total}</span></div>`;
+  const pr=price(s,f.part,f.days),ship=out?SHIP_FEE:0,gd=(f.method==='grab'&&pr>=250)?30:0,pm=bestPromo(pr),pd=pm?pm.d:0,total=Math.max(0,pr+ship-gd-pd);
+  $('#sum').innerHTML=`<div><span>ค่าเช่า ${f.days} วัน</span><span>฿${pr}</span></div>`+(ship?`<div><span>ค่าจัดส่ง</span><span>฿${ship}</span></div>`:'')+(f.method==='grab'?'<div><span>ค่า Grab</span><span>จ่ายตามจริง</span></div>':'')+(gd?`<div><span>ส่วนลดค่าส่ง Grab (ยอดเช่า ฿250 ขึ้นไป)</span><span>−฿${gd}</span></div>`:'')+(pd?`<div><span>🎁 ${esc(pm.p.title)}</span><span>−฿${pd}</span></div>`:'')+`<div><span>คืนชุดภายใน</span><span>${ds?fmt(be)+' ก่อน 18:00 น.':'-'}</span></div><div class="t"><span>รวม</span><span>฿${total}</span></div>`;
   let err='';
   if(!ds)err='เลือกวันใช้งาน';else if(st<T)err='เลือกวันย้อนหลังไม่ได้';else if(bs<T)err='ต่างจังหวัดต้องจองล่วงหน้าอย่างน้อย '+OUT_LEAD+' วัน';
   else if(!pr)err='ชุดนี้ยังไม่ได้ตั้งราคาสำหรับแบบที่เลือก';else if(isBusy(s,f.part,f.size,bs,be))err='ไม่ว่างในช่วงที่เลือก ลองเปลี่ยนวันหรือไซส์';
-  f.o={setId:s.id,part:f.part,size:f.size,area:f.area,method:f.method,start:st,days:f.days,bs,be,total};
+  f.o={setId:s.id,part:f.part,size:f.size,area:f.area,method:f.method,start:st,days:f.days,bs,be,total,promo:pm?pm.p.id:''};
   const m=$('#msg');m.className='msg '+(err?'bad':'ok');m.textContent=err||'ว่าง จองได้';$('#save').disabled=!!err;
 }
 async function submit(){
@@ -374,7 +389,7 @@ function openEdit(id){
   <label>ราคารวมตามจำนวนวัน (บาท) 1-5 วัน</label><div class="days">${[1,2,3,4,5].map(d=>`<input type="number" id="eP${d}" value="${s['p'+d]==null?'':s['p'+d]}" placeholder="${d}">`).join('')}</div>
   <label>ราคาเช่าแยกชิ้นต่อวัน (ว่าง = ไม่ให้เช่าแยก)</label><input id="ePp" type="number" value="${s.pp||''}"><label>ราคาท่อนบน รวมต่อ 1-5 วัน คั่นด้วย , (เช่น 69,79,89)</label><input id="ePtop" value="${esc(s.ptop||'')}"><label>ราคาท่อนล่าง รวมต่อ 1-5 วัน คั่นด้วย , (เช่น 59,89,99)</label><input id="ePbot" value="${esc(s.pbot||'')}">
   <label>ไซส์ที่มี (คั่นด้วยจุลภาค เช่น S,M)</label><input id="eSz" value="${esc(s.sizes)}">
-  <label>ต้นทุนชุด (บาท)</label><input id="eCost" type="number" value="${s.cost||''}">
+  <label>จำนวนตัวที่ร้านมี ต่อไซส์ (เช่น เสื้อมี 2 ตัว ใส่ 2)</label><input id="eQty" type="number" value="${s.qty||1}"><label>ต้นทุนชุด (บาท)</label><input id="eCost" type="number" value="${s.cost||''}">
   ${ck('eNew',s.isNew==='Y','ป้าย "ใหม่"')}${ck('ePin',s.pin==='Y','ปักหมุด (สูงสุด 6 ชุด)')}${ck('eAct',s.active==='Y','แสดงในร้าน')}
   <div class="msg" id="msg"></div><button class="primary" id="eSave" style="width:100%;margin-top:14px">บันทึก</button>`;
   renderPh();renderCats();$('#ov').classList.add('on');
@@ -382,7 +397,7 @@ function openEdit(id){
 function renderCats(){const l=[...new Set([...cats(),f.e.cat].filter(Boolean))];$('#eCats').innerHTML=l.map(c=>`<button type="button" data-ecat="${esc(c)}" aria-pressed="${f.e.cat===c}">${esc(c)}</button>`).join('')+'<button type="button" id="addCat">+ หมวดใหม่</button>'}
 async function saveEdit(){
   const s=f.e,g=i=>$('#'+i).value.trim();
-  Object.assign(s,{name:g('eName'),code:g('eCode'),brand:g('eBrand'),pcs:g('ePcs'),pp:g('ePp'),ptop:g('ePtop'),pbot:g('ePbot'),sizes:g('eSz'),cost:g('eCost'),isNew:$('#eNew').checked?'Y':'',pin:$('#ePin').checked?'Y':'',active:$('#eAct').checked?'Y':''});
+  Object.assign(s,{name:g('eName'),code:g('eCode'),brand:g('eBrand'),pcs:g('ePcs'),pp:g('ePp'),ptop:g('ePtop'),pbot:g('ePbot'),sizes:g('eSz'),cost:g('eCost'),qty:g('eQty'),isNew:$('#eNew').checked?'Y':'',pin:$('#ePin').checked?'Y':'',active:$('#eAct').checked?'Y':''});
   [1,2,3,4,5].forEach(d=>s['p'+d]=g('eP'+d));
   const m=$('#msg');if(!s.name||!s.code){m.className='msg bad';m.textContent='กรอกชื่อและรหัสชุด';return}
   $('#eSave').disabled=true;m.className='msg';

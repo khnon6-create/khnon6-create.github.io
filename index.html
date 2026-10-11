@@ -96,9 +96,18 @@ const fmt=n=>new Date(n*864e5).toLocaleDateString('th-TH',{day:'numeric',month:'
 const now=new Date(),loc=new Date(now-now.getTimezoneOffset()*6e4),todayStr=loc.toISOString().slice(0,10),T=dn(todayStr);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let code='',role='cus',loginRole='cus';
-async function getJson(p){let r;try{r=await p}catch(e){throw 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้'+(/github\.io$/.test(location.hostname)?' (เช็กอินเทอร์เน็ต และตั้ง Deploy เป็น "ทุกคน")':' — หน้าพรีวิวในแชทเชื่อมต่อไม่ได้ ให้ทดสอบที่ khnon6-create.github.io')}
-  try{return await r.json()}catch(e){throw 'Apps Script ตอบกลับผิดปกติ: ยังไม่ได้วาง Code.gs ใหม่ / ยังไม่ได้ Deploy เวอร์ชันใหม่ / ยังไม่ได้อนุญาตสิทธิ์'}}
-const post=(a,d)=>getJson(fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({a,c:code,...d})}));
+const post=(a,d)=>new Promise((res,rej)=>{
+  const id='f'+Date.now()+Math.random().toString(36).slice(2),fr=document.createElement('iframe');
+  fr.name=id;fr.style.display='none';
+  const fm=document.createElement('form');fm.method='POST';fm.action=API;fm.target=id;fm.style.display='none';
+  const i=document.createElement('input');i.type='hidden';i.name='payload';i.value=JSON.stringify({a,c:code,...d,_id:id});fm.appendChild(i);
+  let t;
+  const done=()=>{clearTimeout(t);removeEventListener('message',h);fr.remove();fm.remove()};
+  const h=e=>{if(e.data&&e.data.__id===id){done();res(e.data.r)}};
+  addEventListener('message',h);
+  t=setTimeout(()=>{done();rej('หมดเวลา เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง')},60000);
+  document.body.append(fr,fm);fm.submit();
+});
 let sets=[],busy=[],A={sets:[],orders:[],customers:[]},tab='shop',cat='all',sz='',V=T,f={};
 const adm=()=>role==='own';
 const ov=(p,q)=>p==='set'||q==='set'||p===q;
@@ -119,7 +128,7 @@ async function enter(r,c){
   const m=$('#lgMsg');m.textContent='กำลังตรวจสอบ...';code=c;
   try{
     if(r==='own'){const x=await post('admin',{});if(x.err)throw x.err;if(!x.orders)throw 'Apps Script ยังเป็นโค้ดเวอร์ชันเก่า ให้วาง Code.gs ใหม่แล้ว Deploy เวอร์ชันใหม่';A=x}
-    const x=await getJson(fetch(API+'?c='+encodeURIComponent(c)));if(x.err)throw x.err;if(!x.sets)throw 'Apps Script ยังเป็นโค้ดเวอร์ชันเก่า ให้วาง Code.gs ใหม่แล้ว Deploy เวอร์ชันใหม่';
+    const x=await post('list',{});if(x.err)throw x.err;if(!x.sets)throw 'Apps Script ยังเป็นโค้ดเวอร์ชันเก่า ให้วาง Code.gs ใหม่แล้ว Deploy เวอร์ชันใหม่';
     sets=x.sets;busy=x.busy;role=r;tab=r==='own'?'ord':'shop';
     try{sessionStorage.setItem('k',JSON.stringify([r,c]))}catch(e){}
     $('#login').hidden=true;$('#app').hidden=false;$('#vd').value=todayStr;$('#vd').min=todayStr;m.textContent='';render();
@@ -127,7 +136,7 @@ async function enter(r,c){
 }
 function logout(){try{sessionStorage.removeItem('k')}catch(e){}location.reload()}
 async function load(){
-  try{const r=await(await fetch(API+'?c='+encodeURIComponent(code))).json();sets=r.sets;busy=r.busy;if(adm()){const a=await post('admin',{});if(!a.err)A=a}}
+  try{const r=await post('list',{});if(r.err)throw r.err;sets=r.sets;busy=r.busy;if(adm()){const a=await post('admin',{});if(!a.err)A=a}}
   catch(e){alert('เชื่อมต่อ Google Sheets ไม่ได้')}
   render();
 }
@@ -215,7 +224,7 @@ async function submit(){
     if(r.err){bad(r.err);$('#save').disabled=false;return}
     const s=f.s;
     $('#sheet').innerHTML=`<button class="x" id="close">×</button><div class="ok2"><div class="big">✅</div><h1>ยืนยันการจองเสร็จสิ้น</h1><p class="sub">${esc(s.name)} (${esc(s.code)}) · ไซส์ ${esc(o.size)||'ฟรีไซส์'}<br>ใช้งาน ${fmt(o.start)} · คืน ${fmt(o.be)} · ฿${o.total}</p><p>ร้านได้รับออเดอร์แล้ว${file?' และจะตรวจสลิปแล้วติดต่อกลับ':' กรุณาชำระเงินตามที่ร้านแจ้ง'}</p><button class="primary" id="close2">ปิด</button></div>`;load();
-  }catch(e){bad('ส่งไม่สำเร็จ ลองใหม่อีกครั้ง');$('#save').disabled=false}
+  }catch(e){bad(typeof e==='string'?e:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง');$('#save').disabled=false}
 }
 function renderPh(){$('#eph').innerHTML=f.ids.map((id,i)=>`<div class="t"><img src="${th(id,200)}" alt=""><button data-rm="i${i}">×</button></div>`).join('')+f.files.map((x,i)=>`<div class="t"><img src="${x.u}" alt=""><button data-rm="n${i}">×</button></div>`).join('')+'<button class="t add" id="addPh">+</button>'}
 function openEdit(id){

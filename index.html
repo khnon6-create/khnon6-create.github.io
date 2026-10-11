@@ -74,6 +74,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;bo
   <div id="lgNameBox"><label for="lgName">ชื่อของคุณ</label><input id="lgName" maxlength="40" autocomplete="off"></div><label for="lgPw">รหัสเข้าใช้งาน</label><input id="lgPw" type="password" inputmode="numeric" autocomplete="off">
   <div class="msg bad" id="lgMsg"></div>
   <button class="primary" id="lgGo" style="width:100%;margin-top:14px">เข้าสู่ระบบ</button>
+  <div class="sub" style="margin-top:10px;font-size:11px;opacity:.6">เวอร์ชันหน้าเว็บ 9 (ฟอร์มซ่อน)</div>
 </div></div>
 
 <div class="app" id="app" hidden>
@@ -102,18 +103,22 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 let code='',role='cus',loginRole='cus',me='',posters=[],dev='';
 try{dev=localStorage.getItem('dev')||''}catch(e){}
 if(!dev){dev=Math.random().toString(36).slice(2)+Date.now().toString(36);try{localStorage.setItem('dev',dev)}catch(e){}}
-const post=(a,d)=>new Promise((res,rej)=>{
-  const id='f'+Date.now()+Math.random().toString(36).slice(2),fr=document.createElement('iframe');
-  fr.name=id;fr.style.display='none';
-  const fm=document.createElement('form');fm.method='POST';fm.action=API;fm.target=id;fm.style.display='none';
-  const i=document.createElement('input');i.type='hidden';i.name='payload';i.value=JSON.stringify({a,c:code,...d,_id:id});fm.appendChild(i);
-  let t;
-  const done=()=>{clearTimeout(t);removeEventListener('message',h);fr.remove();fm.remove()};
-  const h=ev=>{if(ev.data&&ev.data.__id===id){done();res(ev.data.r)}};
-  addEventListener('message',h);
-  t=setTimeout(()=>{done();rej('หมดเวลา เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง')},60000);
-  document.body.append(fr,fm);fm.submit();
-});
+const post=(a,d)=>{
+  const once=ms=>new Promise((res,rej)=>{
+    const id='f'+Date.now()+Math.random().toString(36).slice(2),fr=document.createElement('iframe');
+    fr.name=id;fr.style.display='none';
+    const fm=document.createElement('form');fm.method='POST';fm.action=API;fm.target=id;fm.style.display='none';fm.acceptCharset='UTF-8';
+    const i=document.createElement('input');i.type='hidden';i.name='payload';i.value=JSON.stringify({a,c:code,...d,_id:id});fm.appendChild(i);
+    let t;
+    const done=()=>{clearTimeout(t);removeEventListener('message',h);fr.remove();fm.remove()};
+    function h(ev){if(ev.data&&typeof ev.data==='object'&&ev.data.__id===id){done();res(ev.data.r)}}
+    addEventListener('message',h);
+    t=setTimeout(()=>{done();rej('timeout')},ms);
+    document.body.append(fr,fm);fm.submit();
+  });
+  /* ลองใหม่อัตโนมัติ 1 ครั้ง (ครั้งแรกสคริปต์ Google อาจตื่นช้า) */
+  return once(30000).catch(e=>e==='timeout'?once(40000):Promise.reject(e)).catch(e=>Promise.reject(e==='timeout'?'ไม่ได้รับคำตอบจากเซิร์ฟเวอร์ ตรวจว่า Deploy เป็นเวอร์ชันใหม่ และ "ผู้ที่มีสิทธิ์เข้าถึง = ทุกคน" แล้วลองอีกครั้ง':e));
+};
 let sets=[],busy=[],A={sets:[],orders:[],customers:[]},tab='shop',cat='all',sz='',V=T,f={};
 const adm=()=>role==='own';
 const ov=(p,q)=>p==='set'||q==='set'||p===q;

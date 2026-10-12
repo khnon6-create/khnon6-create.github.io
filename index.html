@@ -520,5 +520,24 @@ document.getElementById('chM').onclick=e=>{const t=e.target.closest('.th');if(t)
 })();
 </script>
 
+<script src="animated-themes.js"></script>
+<script>
+  const box = document.createElement('div');
+  box.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;display:flex;gap:6px;flex-wrap:wrap;justify-content:center';
+  Object.entries(AnimatedThemes.themes).forEach(([id, t]) => {
+    const b = document.createElement('button');
+    b.textContent = t.name;
+    b.style.cssText = 'border:0;border-radius:16px;padding:8px 12px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3)';
+    b.onclick = () => AnimatedThemes.apply(id);
+    box.appendChild(b);
+  });
+  const x = document.createElement('button');
+  x.textContent = '✖ ปิดธีม';
+  x.style.cssText = 'border:0;border-radius:16px;padding:8px 12px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3)';
+  x.onclick = () => AnimatedThemes.clear();
+  box.appendChild(x);
+  document.body.appendChild(box);
+  AnimatedThemes.restore();
+</script>
 </body>
 </html>

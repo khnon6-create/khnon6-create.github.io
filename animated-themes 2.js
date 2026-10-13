@@ -14,7 +14,7 @@
       an:  { n: '🧶 แมวอนิเมะเล่นไหมพรม', a: '#ff6fa5', b: '#fff0f7', c: '#ffffff', i: '#5a2a46', m: '#9a6a88', e: '' }
     });
 
-    /* ---------- 2) CSS ---------- */
+    /* ---------- 2) CSS สำหรับภาพเคลื่อนไหว (แอนิเมชันดุ๊กดิ๊กสมูท เป็นธรรมชาติ) ---------- */
     const css = `
 #afx{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
 #afx .p{position:absolute}
@@ -58,11 +58,11 @@ body.ath main{padding-bottom:120px}
     st.textContent = css;
     document.head.appendChild(st);
 
-    /* ---------- 3) ตัวช่วยวาด ---------- */
+    /* ---------- 3) ตัวช่วยวาดองค์ประกอบกราฟิก ---------- */
     const R = (a, b) => a + Math.random() * (b - a);
     const P = (st, h, c) => `<div class="p ${c || ''}" style="${st}">${h || ''}</div>`;
 
-    // แมวสไตล์อนิเมะ (ตาโต วิบวับ แก้มชมพู)
+    // แมวสไตล์อนิเมะ (ตากลมโต วิบวับ แก้มชมพู)
     const cat = (f, o = {}) => {
       const belly = o.belly || '#fff', eye = o.eye || '#3b2a8c', ear = o.ear || '#f6a6b8';
       return `<svg viewBox="0 0 100 100">
@@ -86,7 +86,7 @@ ${o.acc || ''}
 ${o.hat || ''}</g></svg>`;
     };
 
-    // หมาวิ่ง (มองด้านข้าง หันขวา)
+    // หมาวิ่งเล่นไล่จับ
     const dog = (f, belly, ear) => {
       const leg = (x, cls, c) => `<g class="dl ${cls}" style="transform-origin:${x + 4.5}px 56px"><rect x="${x}" y="54" width="9" height="26" rx="4.5" fill="${c}"/></g>`;
       return `<svg viewBox="0 0 130 90">
@@ -107,7 +107,6 @@ ${leg(42, 'b', f)}${leg(82, '', f)}
     const tabbyMark = '<path d="M44 22v8M50 20v9M56 22v8" stroke="#c9741f" stroke-width="3" stroke-linecap="round" fill="none"/>';
     const mikeMark = '<ellipse cx="33" cy="34" rx="12" ry="9" fill="#f2a04a"/><ellipse cx="68" cy="38" rx="10" ry="8" fill="#3a3a3a"/>';
 
-    // ของที่ตกลงมา / ลอยขึ้น
     const fall = (ch, n, d0, d1, s0, s1) => Array.from({ length: n }, () =>
       P(`left:${R(0, 100)}%;top:0;font-size:${R(s0, s1)}px;opacity:.9;animation:a-fall ${R(d0, d1)}s linear infinite;animation-delay:${-R(0, d1)}s`, ch[Math.floor(Math.random() * ch.length)])).join('');
     const rise = (ch, n) => Array.from({ length: n }, () =>
@@ -117,10 +116,9 @@ ${leg(42, 'b', f)}${leg(82, '', f)}
     const stars = n => Array.from({ length: n }, () =>
       P(`left:${R(0, 100)}%;top:${R(0, 48)}%;width:${R(2, 4)}px;height:${R(2, 4)}px;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;animation:a-tw ${R(1.4, 2.8)}s steps(1,end) infinite;animation-delay:${-R(0, 3)}s`)).join('');
 
-    /* ---------- 4) ฉากของแต่ละธีม ---------- */
+    /* ---------- 4) กำหนดแอนิเมชันสำหรับ 5 ธีมใหม่ ---------- */
     const SC = {
-      // แมวฮาโลวีน อนิเมะ
-      hw2: () =>
+      hw2: () => // 1. แมวฮาโลวีน (อนิเมะ)
         P('top:64px;right:18px;width:44px;height:44px;border-radius:50%;background:#ffe9a8;box-shadow:0 0 24px #ffe9a8aa') +
         [18, 34, 52].map((t, i) => P(`left:0;top:${t}%;font-size:26px;animation:a-go ${26 + i * 7}s linear infinite;animation-delay:${-i * 9}s`, '<div class="flap">🦇</div>')).join('') +
         floaty('👻', 8, 30, 34, 7) + floaty('👻', 78, 44, 28, 9) + floaty('🎃', 88, 22, 24, 8) +
@@ -128,8 +126,7 @@ ${leg(42, 'b', f)}${leg(82, '', f)}
         P('left:104px;bottom:2px;font-size:30px', '<div class="bob2">🎃</div>') +
         walker(cat('#f2a04a', { eye: '#2a8c5a', mark: tabbyMark, belly: '#fff3e0', hat: bow }), 70, 42, -10, 6),
 
-      // แมวบนดอยเชียงดาว
-      cd: () =>
+      cd: () => // 2. แมวบนดอยเชียงดาว
         stars(26) +
         P('top:58px;left:16px;width:38px;height:38px;border-radius:50%;box-shadow:inset -11px 0 0 0 #ffe9a8') +
         P('right:26%;top:12%;width:90px;height:2px;background:linear-gradient(90deg,#fff0,#fff);animation:a-shoot 14s linear infinite') +
@@ -140,8 +137,7 @@ ${leg(42, 'b', f)}${leg(82, '', f)}
           `<div class="p" style="left:0;bottom:-6px;width:70%;height:46px;background:radial-gradient(ellipse,#fffc,#fff0 70%);animation:a-mist 14s ease-in-out infinite alternate"></div>` +
           `<div class="p" style="right:0;bottom:6px;width:60%;height:38px;background:radial-gradient(ellipse,#fff9,#fff0 70%);animation:a-mist 19s ease-in-out infinite alternate-reverse"></div>`),
 
-      // แมวญี่ปุ่น ซากุระ
-      jp: () =>
+      jp: () => // 3. แมวญี่ปุ่น ซากุระ
         fall(['🌸', '🌸', '🌺'], 22, 9, 16, 12, 24) +
         [4, 90].map((l, i) => P(`${i ? 'right' : 'left'}:${i ? 12 : 10}px;top:0;width:30px;text-align:center`, '<div class="sw"><div style="width:1px;height:18px;background:#a33;margin:0 auto"></div><div style="font-size:28px;line-height:1">🏮</div></div>')).join('') +
         P('right:6px;bottom:0;width:104px',
@@ -149,8 +145,7 @@ ${leg(42, 'b', f)}${leg(82, '', f)}
         P('right:100px;bottom:2px;width:80px', `<div class="bob">${cat('#ffffff', { eye: '#c0392b', paw: 1, acc: bell, belly: '#fff6ee' })}</div>`) +
         walker(cat('#ffffff', { eye: '#2f6b4a', mark: mikeMark, acc: bell }), 68, 44, -14, 6),
 
-      // หมาวิ่งเล่นไล่จับ
-      dg: () =>
+      dg: () => // 4. หมาวิ่งเล่นไล่จับ
         P('left:0;top:70px;font-size:44px;opacity:.85;animation:a-go 80s linear infinite;animation-delay:-20s', '☁️') +
         P('left:0;top:130px;font-size:34px;opacity:.7;animation:a-go 110s linear infinite;animation-delay:-70s', '☁️') +
         floaty('🦋', 20, 42, 22, 6) + floaty('🦋', 70, 55, 20, 8) +
@@ -159,8 +154,7 @@ ${leg(42, 'b', f)}${leg(82, '', f)}
         walker(dog('#e9a940', '#fff0d0', '#b5701f'), 100, 20, -4.2, 8) +
         walker(dog('#f4ede2', '#fff', '#8a5a36'), 100, 20, 0, 8),
 
-      // แมวอนิเมะเล่นไหมพรม
-      an: () =>
+      an: () => // 5. แมวอนิเมะเล่นไหมพรม
         rise(['💗', '✨', '💖', '⭐'], 10) +
         Array.from({ length: 8 }, () => P(`left:${R(0, 96)}%;top:${R(5, 55)}%;font-size:${R(12, 20)}px;animation:a-tw ${R(1.2, 2.4)}s steps(1,end) infinite;animation-delay:${-R(0, 2)}s`, '✨')).join('') +
         P('left:8px;bottom:4px;width:86px', `<div class="bob">${cat('#ffffff', { eye: '#d6479b', hat: bow, ear: '#ffb6c8' })}</div>`) +
@@ -169,7 +163,7 @@ ${leg(42, 'b', f)}${leg(82, '', f)}
         walker(cat('#f2a04a', { eye: '#7a3fc4', mark: tabbyMark, belly: '#fff3e0' }), 72, 24, 0, 6)
     };
 
-    /* ---------- 5) ผูกเข้ากับ fx() เดิม (applyTheme เรียก fx() ทุกครั้งที่เปลี่ยนธีม) ---------- */
+    /* ---------- 5) ผูกเข้ากับระบบธีมเดิมของหน้าเว็บ ---------- */
     const oldFx = window.fx;
     window.fx = function () {
       const old = document.getElementById('afx');
@@ -189,7 +183,6 @@ ${leg(42, 'b', f)}${leg(82, '', f)}
       if (typeof oldFx === 'function') oldFx();
     };
 
-    // โหลดธีมที่บันทึกไว้ก่อนสคริปต์นี้ → วาดซ้ำ
     applyTheme();
   } catch (e) { console.warn('animated-themes:', e); }
 })();

@@ -1,18 +1,19 @@
 /* nk-extras.js — เสียงคลิกน่ารัก + เพลเยอร์เพลง (ต่อด้วยเพลงผ่อนคลาย) + วิดีโอ/GIF/3D ในโปสเตอร์หน้าหลัก */
-(function () {
-  try {
-    const LS = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v) } catch (e) { return null } };
-    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const isOwn = () => { try { return adm() } catch (e) { return false } };
-    let vol = +(LS('nk_vol') || 0.6), clickOn = LS('nk_click') !== '0', wantOn = LS('nk_on') !== '0';
-    let AC, master;
-    const ac = () => {
-      if (!AC) { AC = new (window.AudioContext || window.webkitAudioContext)(); master = AC.createGain(); master.gain.value = vol; master.connect(AC.destination) }
-      if (AC.state === 'suspended') AC.resume();
-      return AC;
-    };
-    const PEN = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
-
+(function(){
+  const YT='วางลิงก์ YouTube ที่นี่';
+  const m=String(YT).match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([\w-]{11})/);
+  const pan=document.getElementById('nkp');
+  if(!m||!pan)return;
+  const add=()=>{
+    if(!pan.classList.contains('open')||pan.querySelector('#nkyt'))return;
+    const d=document.createElement('div');d.id='nkyt';
+    d.innerHTML='<button style="width:100%;margin-top:10px">🎼 เพลงแนะนำของร้าน</button><div></div>';
+    const b=d.querySelector('button'),w=d.querySelector('div');
+    b.onclick=()=>{w.innerHTML=w.innerHTML?'':'<iframe src="https://www.youtube.com/embed/'+m[1]+'?rel=0&playsinline=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen style="width:100%;aspect-ratio:16/9;border:0;border-radius:12px;margin-top:8px"></iframe><a href="https://youtu.be/'+m[1]+'" target="_blank" rel="noopener" style="font-size:12px">เล่นไม่ได้? เปิดใน YouTube</a>'};
+    pan.appendChild(d);
+  };
+  new MutationObserver(add).observe(pan,{childList:true,attributes:true});
+})();
     /* ---------- 1) เสียงคลิก ---------- */
     function click() {
       if (!clickOn) return;

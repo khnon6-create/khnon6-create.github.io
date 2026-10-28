@@ -1,6 +1,6 @@
-/* nk-extras.js — เสียงคลิกน่ารัก + เพลเยอร์เพลง (ต่อด้วยเพลงผ่อนคลาย) + วิดีโอ/GIF/3D ในโปสเตอร์หน้าหลัก */
+ต/* nk-extras.js — เสียงคลิกน่ารัก + เพลเยอร์เพลง (ต่อด้วยเพลงผ่อนคลาย) + วิดีโอ/GIF/3D ในโปสเตอร์หน้าหลัก */
 (function(){
-  const YT='วางลิงก์ YouTube ที่นี่';
+  const YT='https://youtu.be/A0at5cAlbZQ';
   const m=String(YT).match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([\w-]{11})/);
   const pan=document.getElementById('nkp');
   if(!m||!pan)return;
